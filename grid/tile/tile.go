@@ -1,7 +1,7 @@
 package tile
 
 import (
-    . "image/color"
+    "github.com/hajimehoshi/ebiten"
 )
 
 // Private type
@@ -11,33 +11,29 @@ const (
     EMPTY tval = 0
     X     tval = 1
     O     tval = 2
-    // X     tval = '\uf00d'
-    // O     tval = '\uf111'
 )
 
 type Tile interface {
     GetValue() tval
     SetValue(value tval) Tile
     
-    GetColor() Color
-    SetColor(color Color) Tile
+    IsActive() bool
+    SetActive(active bool) Tile
     
-    GetBgColor() Color
-    SetBgColor(color Color) Tile
+    IsWinning() bool
+    SetWinning(win bool) Tile
     
-    GetStrokeWidth() float64
-    SetStrokeWidth(w float64) Tile
+    GetImage() *ebiten.Image
 }
 
-func NewTile(value tval, color Color, strkWidth float64) Tile {
-    return &tile{value, color, Transparent, strkWidth}
+func NewTile(value tval) Tile {
+    return &tile{value, false, false}
 }
 
 type tile struct {
-    value tval
-    color Color
-    bgColor Color
-    strokeWidth float64
+    value   tval
+    active  bool
+    winning bool
 }
 
 func (t *tile) GetValue() tval {
@@ -49,30 +45,20 @@ func (t *tile) SetValue(value tval) Tile {
     return t
 }
 
-func (t *tile) GetColor() Color {
-    return t.color
+func (t *tile) IsActive() bool {
+    return t.active
 }
 
-func (t *tile) SetColor(color Color) Tile {
-    t.color = color
+func (t *tile) SetActive(active bool) Tile {
+    t.active = active
     return t
 }
 
-func (t *tile) GetBgColor() Color {
-    return t.bgColor
+func (t *tile) IsWinning() bool {
+    return t.winning
 }
 
-func (t *tile) SetBgColor(color Color) Tile {
-    t.bgColor = color
+func (t *tile) SetWinning(win bool) Tile {
+    t.winning = win
     return t
 }
-
-func (t *tile) GetStrokeWidth() float64 {
-    return t.strokeWidth
-}
-
-func (t *tile) SetStrokeWidth(w float64) Tile {
-    t.strokeWidth = w
-    return t
-}
-

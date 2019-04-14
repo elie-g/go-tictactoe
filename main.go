@@ -21,11 +21,11 @@ func update(screen *ebiten.Image) error {
     }
     
     if activeTile != nil {
-        activeTile.SetBgColor(Black).SetColor(White)
+        activeTile.SetActive(false)
     }
     
     if activeTile = grid.GetTileUnderCursor(); activeTile != nil {
-        activeTile.SetBgColor(White).SetColor(Black)
+        activeTile.SetActive(true)
     }
     
     // _ = screen.Clear()
@@ -43,9 +43,9 @@ func main() {
     grid.GetTileAt(1, 1).SetValue(tile.X)
     grid.GetTileAt(0, 0).SetValue(tile.O)
     grid.GetTileAt(1, 0).SetValue(tile.X)
-    grid.GetTileAt(2, 2).SetValue(tile.O)
+    // grid.GetTileAt(2, 2).SetValue(tile.O)
     grid.GetTileAt(2, 0).SetValue(tile.X)
-    grid.GetTileAt(2, 1).SetValue(tile.O)
+    // grid.GetTileAt(2, 1).SetValue(tile.O)
     
     if err := ebiten.Run(update, 800 * 2, 800 * 2, 1, "Go Tic-Tac-Toe"); err != nil {
         log.Fatalln(err)

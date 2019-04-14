@@ -6,6 +6,7 @@ import (
     . "image/color"
 )
 
+
 type Grid interface {
     Columns() int
     Rows() int
@@ -29,7 +30,7 @@ func NewGrid(columns int, rows int, color Color, strokeWidth float64) Grid {
     for x := 0; x < columns; x++ {
         var col []Tile
         for y := 0; y < rows; y++ {
-            col = append(col, NewTile(EMPTY, color, strokeWidth))
+            col = append(col, NewTile(EMPTY))
         }
         tiles = append(tiles, col)
     }
