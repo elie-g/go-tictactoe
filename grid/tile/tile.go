@@ -4,18 +4,17 @@ import (
     "github.com/hajimehoshi/ebiten"
 )
 
-// Private type
-type tval uint8
+type TileType uint8
 
 const (
-    EMPTY tval = 0
-    X     tval = 1
-    O     tval = 2
+    EMPTY TileType = 0
+    X     TileType = 1
+    O     TileType = 2
 )
 
 type Tile interface {
-    GetValue() tval
-    SetValue(value tval) Tile
+    GetValue() TileType
+    SetValue(value TileType) Tile
     
     IsActive() bool
     SetActive(active bool) Tile
@@ -26,21 +25,21 @@ type Tile interface {
     GetImage() *ebiten.Image
 }
 
-func NewTile(value tval) Tile {
+func NewTile(value TileType) Tile {
     return &tile{value, false, false}
 }
 
 type tile struct {
-    value   tval
+    value   TileType
     active  bool
     winning bool
 }
 
-func (t *tile) GetValue() tval {
+func (t *tile) GetValue() TileType {
     return t.value
 }
 
-func (t *tile) SetValue(value tval) Tile {
+func (t *tile) SetValue(value TileType) Tile {
     t.value = value
     return t
 }

@@ -55,7 +55,6 @@ func (t *tile) GetImage() *ebiten.Image {
             gfx.DrawPolygon(img, rect, 0, c)
         }
         
-        // println(t.GetValue())
         switch t.GetValue() {
         case X:
             w, h := float64(img.Rect.Dx()), float64(img.Rect.Dy())

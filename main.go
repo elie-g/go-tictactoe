@@ -2,11 +2,11 @@ package main
 
 import (
     "fmt"
+    "github.com/DrunkenPoney/go-tictactoe/events"
     . "github.com/DrunkenPoney/go-tictactoe/grid"
     "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     "github.com/hajimehoshi/ebiten/ebitenutil"
     
-    // "github.com/go-vgo/robotgo"
     "github.com/hajimehoshi/ebiten"
     . "image/color"
     "log"
@@ -28,13 +28,29 @@ func update(screen *ebiten.Image) error {
         activeTile.SetActive(true)
     }
     
+    // if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+    //
+    // }
+    
     // _ = screen.Clear()
     grid.DrawGrid(screen)
     
     _ = ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f, TPS: %f", ebiten.CurrentFPS(), ebiten.CurrentTPS()))
-    // text.Draw(screen, fmt.Sprintf("FPS: %d, TPS: %d", ebiten.CurrentFPS(), ebiten.CurrentTPS()), nil, 50, 50, RGBA{R: 0xFF, G: 0x99, B: 0x00, A: 0xFF})
     
     return nil
+}
+
+func clickListener() {
+    for {
+        select {
+        case <- events.MouseClick():
+            t := grid.GetTileUnderCursor()
+            if t.GetValue() == tile.EMPTY {
+                t.SetValue()
+            }
+        default:
+        }
+    }
 }
 
 func main() {
