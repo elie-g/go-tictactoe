@@ -2,17 +2,20 @@ package main
 
 import (
 	"fmt"
+	"github.com/DrunkenPoney/go-tictactoe/events"
+	g "github.com/DrunkenPoney/go-tictactoe/game"
+	"github.com/DrunkenPoney/go-tictactoe/game/player"
 	. "github.com/DrunkenPoney/go-tictactoe/grid"
 	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
-
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/ebitenutil"
 	. "image/color"
 	"log"
 )
 
-var grid Grid
+// var grid Grid
 var activeTile tile.Tile
+var game g.Game
 
 func update(screen *ebiten.Image) error {
 	if ebiten.IsDrawingSkipped() {
@@ -23,30 +26,37 @@ func update(screen *ebiten.Image) error {
 		activeTile.SetActive(false)
 	}
 
-	if activeTile = grid.GetTileUnderCursor(); activeTile != nil {
+	if activeTile = game.GetBoard().GetTileUnderCursor(); activeTile != nil {
 		activeTile.SetActive(true)
 	}
 
-	// if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-	//
-	// }
-
-	// _ = screen.Clear()
-	grid.DrawGrid(screen)
+	game.Draw(screen)
 
 	_ = ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f, TPS: %f", ebiten.CurrentFPS(), ebiten.CurrentTPS()))
 
 	return nil
 }
 
-func main() {
-	grid = NewGrid(3, 3, White, 10)
+func clickListener() {
+	for {
+		select {
+		case <-events.MouseClick():
+			println("Mouse clicked!")
+		default:
+		}
+	}
+}
 
-	grid.GetTileAt(1, 1).SetValue(tile.X)
-	grid.GetTileAt(0, 0).SetValue(tile.O)
-	grid.GetTileAt(1, 0).SetValue(tile.X)
+func main() {
+	// go clickListener()
+	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), NewGrid(3, 3, White, 10))
+	// grid = NewGrid(3, 3, White, 10)
+
+	// grid.GetTileAt(1, 1).SetValue(tile.X)
+	// grid.GetTileAt(0, 0).SetValue(tile.O)
+	// grid.GetTileAt(1, 0).SetValue(tile.X)
 	// grid.GetTileAt(2, 2).SetValue(tile.O)
-	grid.GetTileAt(2, 0).SetValue(tile.X)
+	// grid.GetTileAt(2, 0).SetValue(tile.X)
 	// grid.GetTileAt(2, 1).SetValue(tile.O)
 
 	if err := ebiten.Run(update, 800*2, 800*2, 1, "Go Tic-Tac-Toe"); err != nil {

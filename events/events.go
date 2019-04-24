@@ -7,7 +7,9 @@ import (
 func MouseClick() <-chan bool {
 	ch := make(chan bool)
 	go func(ch chan bool) {
-		ch <- robotgo.AddEvent("mleft")
+		for {
+			ch <- robotgo.AddEvent("mleft")
+		}
 	}(ch)
 	return ch
 }

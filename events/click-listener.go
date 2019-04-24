@@ -20,6 +20,7 @@ func NewClickListener() ClickListener {
 		destroyed: false,
 		stopChan:  make(chan bool),
 		mut:       mut,
+		clickChan: MouseClick(),
 		callbacks: []func(){},
 	}
 	go listener.init()
@@ -31,6 +32,7 @@ type clickListener struct {
 	destroyed bool
 	stopChan  chan bool
 	mut       sync.Mutex
+	clickChan <-chan bool
 	callbacks []func()
 }
 
@@ -39,11 +41,12 @@ func (listener *clickListener) init() {
 	for !listener.destroyed {
 		if listener.running {
 			select {
-			case <-MouseClick():
+			case <-listener.clickChan:
 				for _, cb := range listener.callbacks {
 					cb()
 				}
 			case <-listener.stopChan:
+			default:
 			}
 		} else {
 			<-listener.stopChan

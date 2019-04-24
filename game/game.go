@@ -71,12 +71,12 @@ func (g *game) GetWinner() player.Player {
 	for col, columns := range tiles {
 		for row, cell := range columns {
 			if cell.GetValue() != tile.EMPTY {
-				if columns[row+1].GetValue() == cell.GetValue() &&
+				if len(columns) > row+2 && columns[row+1].GetValue() == cell.GetValue() &&
 					columns[row+2].GetValue() == cell.GetValue() {
 					columns[row+1].SetWinning(true)
 					columns[row+2].SetWinning(true)
 					cell.SetWinning(true)
-				} else if tiles[col+1][row].GetValue() == cell.GetValue() &&
+				} else if len(tiles) > col+2 && tiles[col+1][row].GetValue() == cell.GetValue() &&
 					tiles[col+2][row].GetValue() == cell.GetValue() {
 					tiles[col+1][row].SetWinning(true)
 					tiles[col+2][row].SetWinning(true)
@@ -97,6 +97,7 @@ func (g *game) GetWinner() player.Player {
 }
 
 func (g *game) NextTurn() Game {
+	g.GetWinner()
 	g.playerX.SetCurrent(!g.playerX.IsCurrent())
 	g.playerO.SetCurrent(!g.playerO.IsCurrent())
 	return g
@@ -108,7 +109,6 @@ func (g *game) Reset() Game {
 }
 
 func (g *game) Draw(screen *ebiten.Image) Game {
-	g.GetWinner()
 	g.GetBoard().DrawGrid(screen)
 	return g
 }
