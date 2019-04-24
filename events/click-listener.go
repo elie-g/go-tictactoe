@@ -14,11 +14,12 @@ type ClickListener interface {
 }
 
 func NewClickListener() ClickListener {
+	var mut sync.Mutex
 	listener := &clickListener{
 		running:   false,
 		destroyed: false,
 		stopChan:  make(chan bool),
-		mut:       nil,
+		mut:       mut,
 		callbacks: []func(){},
 	}
 	go listener.init()
