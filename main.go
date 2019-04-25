@@ -49,7 +49,7 @@ func clickListener() {
 
 func main() {
 	// go clickListener()
-	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), NewGrid(3, 3, White, 10))
+	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), NewGrid(9, 9, White, 10))
 	// grid = NewGrid(3, 3, White, 10)
 
 	// grid.GetTileAt(1, 1).SetValue(tile.X)
@@ -59,7 +59,7 @@ func main() {
 	// grid.GetTileAt(2, 0).SetValue(tile.X)
 	// grid.GetTileAt(2, 1).SetValue(tile.O)
 
-	if err := ebiten.Run(update, 800*2, 800*2, 1, "Go Tic-Tac-Toe"); err != nil {
+	if err := ebiten.Run(update, 800, 800, 1, "Go Tic-Tac-Toe"); err != nil {
 		log.Fatalln(err)
 	}
 }

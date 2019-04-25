@@ -97,9 +97,22 @@ func (g *game) GetWinner() player.Player {
 }
 
 func (g *game) NextTurn() Game {
-	g.GetWinner()
-	g.playerX.SetCurrent(!g.playerX.IsCurrent())
-	g.playerO.SetCurrent(!g.playerO.IsCurrent())
+	for {
+		g.GetWinner()
+		g.playerX.SetCurrent(!g.playerX.IsCurrent())
+		g.playerO.SetCurrent(!g.playerO.IsCurrent())
+		if g.playerX.IsCurrent() {
+			var col int
+			var cell int
+			col = rand.Intn(9)
+			cell = rand.Intn(9)
+
+			g.GetBoard().GetTileAt(col, cell).SetValue(tile.X)
+		} else {
+			break
+		}
+	}
+
 	return g
 }
 
