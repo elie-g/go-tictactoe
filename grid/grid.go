@@ -1,9 +1,11 @@
 package grid
 
 import (
+	"fmt"
 	. "github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	"github.com/hajimehoshi/ebiten"
 	. "image/color"
+	"math"
 )
 
 type Grid interface {
@@ -23,6 +25,9 @@ type Grid interface {
 
 	GetTileUnderCursor() Tile
 
+	GetGridNumber() int
+	SetGridNumber(position []int) Grid
+
 	Reset() Grid
 }
 
@@ -31,10 +36,11 @@ func NewGrid(columns int, rows int, color Color, strokeWidth float64) Grid {
 	for x := range tiles {
 		tiles[x] = make([]Tile, rows)
 		for y := range tiles[x] {
-			tiles[x][y] = NewTile(EMPTY)
+			tiles[x][y] = NewTile(EMPTY, []int{x, y})
+
 		}
 	}
-	return &grid{tiles, columns, rows, color, strokeWidth, nil}
+	return &grid{tiles, columns, rows, color, strokeWidth, nil, nil}
 }
 
 type grid struct {
@@ -44,6 +50,7 @@ type grid struct {
 	color       Color
 	strokeWidth float64
 	img         *ebiten.Image
+	gridNumber  int
 }
 
 func (g *grid) Columns() int {
@@ -77,6 +84,51 @@ func (g *grid) GetStrokeWidth() float64 {
 
 func (g *grid) SetStrokeWidth(w float64) Grid {
 	g.strokeWidth = w
+	return g
+}
+
+func (g *grid) GetGridNumber() int {
+	return g.gridNumber
+}
+
+func (g *grid) SetGridNumber(position []int) Grid {
+	var number int
+	var col int
+	col = int(math.Ceil(float64(position[0]) / 3))
+	var row int
+	row = int(math.Ceil(float64(position[1]) / 3))
+
+	switch col {
+	case 1:
+		switch row {
+		case 1:
+			number = 1
+		case 2:
+			number = 4
+		case 3:
+			number = 7
+		}
+	case 2:
+		switch row {
+		case 1:
+			number = 2
+		case 2:
+			number = 5
+		case 3:
+			number = 8
+		}
+	case 3:
+		switch row {
+		case 1:
+			number = 3
+		case 2:
+			number = 6
+		case 3:
+			number = 9
+		}
+	}
+
+	g.gridNumber = number
 	return g
 }
 

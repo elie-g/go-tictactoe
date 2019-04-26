@@ -50,6 +50,7 @@ func (g *game) onClick() {
 		} else {
 			t.SetValue(tile.X)
 		}
+		g.SetGridNumber(t.GetPosition())
 		g.NextTurn()
 	}
 }
