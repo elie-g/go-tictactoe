@@ -1,7 +1,6 @@
 package grid
 
 import (
-	"fmt"
 	. "github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	"github.com/hajimehoshi/ebiten"
 	. "image/color"
@@ -40,7 +39,7 @@ func NewGrid(columns int, rows int, color Color, strokeWidth float64) Grid {
 
 		}
 	}
-	return &grid{tiles, columns, rows, color, strokeWidth, nil, nil}
+	return &grid{tiles, columns, rows, color, strokeWidth, nil, 0}
 }
 
 type grid struct {
