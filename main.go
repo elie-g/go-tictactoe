@@ -5,7 +5,7 @@ import (
 	"github.com/DrunkenPoney/go-tictactoe/events"
 	g "github.com/DrunkenPoney/go-tictactoe/game"
 	"github.com/DrunkenPoney/go-tictactoe/game/player"
-	. "github.com/DrunkenPoney/go-tictactoe/grids"
+	. "github.com/DrunkenPoney/go-tictactoe/grid"
 	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
@@ -49,7 +49,7 @@ func clickListener() {
 
 func main() {
 	// go clickListener()
-	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), NewGrids(3, 3, White, 10))
+	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), NewGrid(9, 9, White, 10))
 	// grid = NewGrid(3, 3, White, 10)
 
 	// grid.GetTileAt(1, 1).SetValue(tile.X)
