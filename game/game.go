@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"github.com/DrunkenPoney/go-tictactoe/events"
 	"github.com/DrunkenPoney/go-tictactoe/game/player"
 	"github.com/DrunkenPoney/go-tictactoe/grid"
@@ -50,7 +51,8 @@ func (g *game) onClick() {
 		} else {
 			t.SetValue(tile.X)
 		}
-		g.SetGridNumberFromInt(t.GetPosition())
+
+		g.GetBoard().SetGridNumber(t.GetPosition())
 		g.NextTurn()
 	}
 }
@@ -105,8 +107,11 @@ func (g *game) NextTurn() Game {
 		if g.playerX.IsCurrent() {
 			var col int
 			var cell int
-			col = rand.Intn(3) + g.GetColOffset()
-			cell = rand.Intn(3) + g.GetRowOffset
+			fmt.Println(g.GetBoard().GetColOffset())
+			fmt.Println(g.GetBoard().GetRowOffset())
+
+			col = rand.Intn(3) + g.GetBoard().GetColOffset()
+			cell = rand.Intn(3) + g.GetBoard().GetRowOffset()
 
 			g.GetBoard().GetTileAt(col, cell).SetValue(tile.X)
 		} else {

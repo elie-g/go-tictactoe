@@ -4,7 +4,6 @@ import (
 	. "github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	"github.com/hajimehoshi/ebiten"
 	. "image/color"
-	"math"
 )
 
 type Grid interface {
@@ -94,12 +93,53 @@ func (g *grid) GetGridNumber() int {
 	return g.gridNumber
 }
 
-func (g *grid) SetGridNumber(position []int) Grid {
+/*func (g *grid) SetGridNumber(position []int) Grid {
 	var number int
 	var col int
 	col = int(math.Ceil(float64(position[0]) / 3))
 	var row int
 	row = int(math.Ceil(float64(position[1]) / 3))
+
+	switch col {
+	case 1:
+		switch row {
+		case 1:
+			number = 1
+		case 2:
+			number = 4
+		case 3:
+			number = 7
+		}
+	case 2:
+		switch row {
+		case 1:
+			number = 2
+		case 2:
+			number = 5
+		case 3:
+			number = 8
+		}
+	case 3:
+		switch row {
+		case 1:
+			number = 3
+		case 2:
+			number = 6
+		case 3:
+			number = 9
+		}
+	}
+
+	g.gridNumber = number
+	return g
+}*/
+
+func (g *grid) SetGridNumber(position []int) Grid {
+	var number int
+	var col int
+	col = int(position[0]%3) + 1
+	var row int
+	row = int(position[1]%3) + 1
 
 	switch col {
 	case 1:
@@ -155,10 +195,10 @@ func (g *grid) GetColOffset() int {
 func (g *grid) GetRowOffset() int {
 	var offset int
 	offset = 0
-	if g.gridNumber/3 == 2 {
+	if g.gridNumber == 4 || g.gridNumber == 5 || g.gridNumber == 6 {
 		offset = 3
 	}
-	if g.gridNumber/3 == 3 {
+	if g.gridNumber == 7 || g.gridNumber == 8 || g.gridNumber == 9 {
 		offset = 6
 	}
 	return offset
