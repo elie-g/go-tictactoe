@@ -99,23 +99,23 @@ func (g *game) GetWinner() player.Player {
 	return nil
 }
 
+func (g *game) willWin() bool {
+
+	return true
+}
+
 func (g *game) NextTurn() Game {
 	for {
 		g.GetWinner()
 		g.playerX.SetCurrent(!g.playerX.IsCurrent())
 		g.playerO.SetCurrent(!g.playerO.IsCurrent())
+
 		if g.playerX.IsCurrent() {
-			var col int
-			var cell int
-			fmt.Println(g.GetBoard().GetColOffset())
-			fmt.Println(g.GetBoard().GetRowOffset())
+			g.PlayAINextMove()
 
-			col = rand.Intn(3) + g.GetBoard().GetColOffset()
-			cell = rand.Intn(3) + g.GetBoard().GetRowOffset()
-
-			g.GetBoard().GetTileAt(col, cell).SetValue(tile.X)
 		} else {
 			break
+
 		}
 	}
 
@@ -138,4 +138,39 @@ func (g *game) GetCurrentPlayer() player.Player {
 		cur = g.playerX
 	}
 	return cur
+}
+
+func (g *game) PlayAINextMove() {
+	var posibility = g.GetPosibility()
+	var choice = g.GetNextMove(posibility)
+	fmt.Println(g.GetBoard().GetColOffset())
+	fmt.Println(g.GetBoard().GetRowOffset())
+	fmt.Println(posibility)
+
+	g.GetBoard().GetTileAt(choice[0], choice[1]).SetValue(tile.X)
+}
+
+func (g *game) GetPosibility() [][]int {
+	var posibility [][]int
+
+	fmt.Println(g.GetBoard().GetColOffset())
+	fmt.Println(g.GetBoard().GetRowOffset())
+
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 3; j++ {
+			if g.GetBoard().GetTileAt(i+g.GetBoard().GetColOffset(), j+g.GetBoard().GetRowOffset()).GetValue() == tile.EMPTY {
+				choice := []int{i + g.GetBoard().GetColOffset(), j + g.GetBoard().GetRowOffset()}
+				posibility = append(posibility, choice)
+			}
+		}
+	}
+
+	return posibility
+}
+
+func (g *game) GetNextMove(choices [][]int) []int {
+	var choice []int
+	choice = choices[0]
+
+	return choice
 }
