@@ -15,7 +15,7 @@ type Game interface {
 	GetPlayerX() player.Player
 	NextTurn() Game
 	GetBoard() grid.Grid
-	GetWinner() player.Player
+	GetWinnerFromGivinGrid(tiles [][]tile.Tile) player.Player
 	GetCurrentPlayer() player.Player
 	Reset() Game
 	Draw(screen *ebiten.Image) Game
@@ -69,6 +69,7 @@ func (g *game) GetBoard() grid.Grid {
 	return g.board
 }
 
+/*
 func (g *game) GetWinner() player.Player {
 	tiles := g.board.GetTiles()
 	for col, columns := range tiles {
@@ -97,16 +98,68 @@ func (g *game) GetWinner() player.Player {
 	}
 
 	return nil
+}*/
+
+func (g *game) GetWinnerFromGivinGrid(tiles [][]tile.Tile) player.Player {
+	for col, columns := range tiles {
+		for row, cell := range columns {
+			if cell.GetValue() != tile.EMPTY {
+				if len(columns) > row+2 && columns[row+1].GetValue() == cell.GetValue() &&
+					columns[row+2].GetValue() == cell.GetValue() {
+					columns[row+1].SetWinning(true)
+					columns[row+2].SetWinning(true)
+					cell.SetWinning(true)
+				} else if len(tiles) > col+2 && tiles[col+1][row].GetValue() == cell.GetValue() &&
+					tiles[col+2][row].GetValue() == cell.GetValue() {
+					tiles[col+1][row].SetWinning(true)
+					tiles[col+2][row].SetWinning(true)
+					cell.SetWinning(true)
+				}
+				if cell.IsWinning() {
+					if cell.GetValue() == tile.X {
+						return g.playerX
+					} else {
+						return g.playerO
+					}
+				}
+			}
+		}
+	}
+
+	return nil
 }
 
-func (g *game) willWin() bool {
+func (g *game) CanWin(currentGrid [][]tile.Tile) []int {
+	var winningTilePosition []int
 
-	return true
+	//à revoir, je suis incapable de copier current grid sans que gridTempo modifie les valeurs de currentGrid par la suite
+	//ex:gridTempo = currentGrid
+	gridTempo := make([][]tile.Tile, 3)
+	for x := range gridTempo {
+		gridTempo[x] = make([]tile.Tile, 3)
+		for y := range gridTempo[x] {
+			gridTempo[x][y] = tile.NewTile(currentGrid[x][y].GetValue(), currentGrid[x][y].GetPosition())
+
+		}
+	}
+
+	for col, columns := range gridTempo {
+		for row := range columns {
+			if gridTempo[row][col].GetValue() == tile.EMPTY {
+				gridTempo[row][col].SetValue(tile.X)
+				if g.GetWinnerFromGivinGrid(gridTempo) == g.playerX {
+					winningTilePosition = gridTempo[row][col].GetPosition()
+				}
+			}
+		}
+	}
+
+	return winningTilePosition
 }
 
 func (g *game) NextTurn() Game {
 	for {
-		g.GetWinner()
+		g.GetWinnerFromGivinGrid(g.board.GetCurrentGrid())
 		g.playerX.SetCurrent(!g.playerX.IsCurrent())
 		g.playerO.SetCurrent(!g.playerO.IsCurrent())
 
@@ -143,18 +196,13 @@ func (g *game) GetCurrentPlayer() player.Player {
 func (g *game) PlayAINextMove() {
 	var posibility = g.GetPosibility()
 	var choice = g.GetNextMove(posibility)
-	fmt.Println(g.GetBoard().GetColOffset())
-	fmt.Println(g.GetBoard().GetRowOffset())
-	fmt.Println(posibility)
+	fmt.Println(choice)
 
 	g.GetBoard().GetTileAt(choice[0], choice[1]).SetValue(tile.X)
 }
 
 func (g *game) GetPosibility() [][]int {
 	var posibility [][]int
-
-	fmt.Println(g.GetBoard().GetColOffset())
-	fmt.Println(g.GetBoard().GetRowOffset())
 
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
@@ -170,7 +218,16 @@ func (g *game) GetPosibility() [][]int {
 
 func (g *game) GetNextMove(choices [][]int) []int {
 	var choice []int
-	choice = choices[0]
+
+	//s'il peut gagner, il effectue directement le choix de gagner
+	if len(g.CanWin(g.GetBoard().GetCurrentGrid())) == 1 {
+		choice = g.CanWin(g.GetBoard().GetCurrentGrid())
+	} else {
+
+		choice = choices[0]
+	}
+
+	fmt.Println(choice)
 
 	return choice
 }

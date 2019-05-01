@@ -30,6 +30,8 @@ type Grid interface {
 	GetColOffset() int
 	GetRowOffset() int
 
+	GetCurrentGrid() [][]Tile
+
 	Reset() Grid
 }
 
@@ -202,6 +204,18 @@ func (g *grid) GetRowOffset() int {
 		offset = 6
 	}
 	return offset
+}
+
+func (g *grid) GetCurrentGrid() [][]Tile {
+	currentGrid := make([][]Tile, 3)
+	for x := range currentGrid {
+		currentGrid[x] = make([]Tile, 3)
+		for y := range currentGrid[x] {
+			currentGrid[x][y] = g.GetTileAt(x+g.GetColOffset(), y+g.GetRowOffset())
+		}
+	}
+
+	return currentGrid
 }
 
 func (g *grid) Reset() Grid {
