@@ -26,6 +26,10 @@ type Grid interface {
 
 	GetGridNumber() int
 	SetGridNumber(position []int) Grid
+	SetGridNumberFromInt(position int) Grid
+
+	GetColOffset() int
+	GetRowOffset() int
 
 	Reset() Grid
 }
@@ -129,6 +133,35 @@ func (g *grid) SetGridNumber(position []int) Grid {
 
 	g.gridNumber = number
 	return g
+}
+
+func (g *grid) SetGridNumberFromInt(position int) Grid {
+	g.gridNumber = position
+	return g
+}
+
+func (g *grid) GetColOffset() int {
+	var offset int
+	offset = 0
+	if g.gridNumber%3 == 2 {
+		offset = 3
+	}
+	if g.gridNumber%3 == 0 {
+		offset = 6
+	}
+	return offset
+}
+
+func (g *grid) GetRowOffset() int {
+	var offset int
+	offset = 0
+	if g.gridNumber/3 == 2 {
+		offset = 3
+	}
+	if g.gridNumber/3 == 3 {
+		offset = 6
+	}
+	return offset
 }
 
 func (g *grid) Reset() Grid {

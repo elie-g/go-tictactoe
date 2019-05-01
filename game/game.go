@@ -50,7 +50,7 @@ func (g *game) onClick() {
 		} else {
 			t.SetValue(tile.X)
 		}
-		//g.SetGridNumber(t.GetPosition())
+		g.SetGridNumberFromInt(t.GetPosition())
 		g.NextTurn()
 	}
 }
@@ -105,8 +105,8 @@ func (g *game) NextTurn() Game {
 		if g.playerX.IsCurrent() {
 			var col int
 			var cell int
-			col = rand.Intn(9)
-			cell = rand.Intn(9)
+			col = rand.Intn(3) + g.GetColOffset()
+			cell = rand.Intn(3) + g.GetRowOffset
 
 			g.GetBoard().GetTileAt(col, cell).SetValue(tile.X)
 		} else {
