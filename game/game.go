@@ -230,9 +230,42 @@ func (g *game) GetNextMove(choices [][]int) []int {
 	if len(g.CanWin(g.GetBoard().GetCurrentGrid())) != 0 {
 		choice = g.CanWin(g.GetBoard().GetCurrentGrid())
 	} else {
-
-		choice = choices[rand.Intn(len(choices))]
+		choicesSorted := g.SortChoices(choices, 0)
+		fmt.Println(choicesSorted)
+		choice = choicesSorted[0]
 	}
 
 	return choice
+}
+
+func (g *game) SortChoices(choices [][]int, number int) [][]int {
+	if len(choices) > number {
+		if g.isGridWithO(choices[number]) {
+			choices = remove(choices, number)
+		}
+		return g.SortChoices(choices, (number + 1))
+	} else {
+		return choices
+	}
+}
+
+func remove(slice [][]int, i int) [][]int {
+	copy(slice[i:], slice[i+1:])
+	return slice[:len(slice)-1]
+}
+
+func (g *game) isGridWithO(gridNumber []int) bool {
+	tempoCurrentGridNumber := g.board.GetGridNumber()
+	g.board.SetGridNumber(gridNumber)
+
+	for x, col := range g.board.GetCurrentGrid() {
+		for y := range col {
+			if g.board.GetCurrentGrid()[x][y].GetValue() == tile.O {
+				g.board.SetGridNumberFromInt(tempoCurrentGridNumber)
+				return true
+			}
+		}
+	}
+	g.board.SetGridNumberFromInt(tempoCurrentGridNumber)
+	return false
 }
