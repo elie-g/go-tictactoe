@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	bou.ke/monkey v1.0.1 // indirect
+	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/go-vgo/robotgo v0.0.0-20190413190953-f45dc8d4d7b2
 	github.com/hajimehoshi/ebiten v1.9.0
 	github.com/otiai10/curr v0.0.0-20150429015615-9b4961190c95 // indirect
