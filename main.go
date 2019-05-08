@@ -14,7 +14,6 @@ import (
 	"log"
 )
 
-// var grid Board
 var activeTile *tile.Tile
 var game g.Game
 

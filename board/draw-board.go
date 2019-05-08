@@ -1,7 +1,6 @@
 package board
 
 import (
-    "fmt"
     "github.com/DrunkenPoney/go-tictactoe/grid"
     "github.com/DrunkenPoney/go-tictactoe/internal"
     . "github.com/DrunkenPoney/go-tictactoe/position"
@@ -36,23 +35,18 @@ func (b *board) DrawBoard(screen *ebiten.Image) {
                 g.Draw(img, b.UI().SubStrokeWidth, b.UI().SubGridColor)
                 mut.Lock()
                 b.cellImg[pos] = img
-                x, y := pos.GetXY()
-                fmt.Printf("Pos: %d (%d, %d)\n", pos, x, y)
                 mut.Unlock()
             }(pos, g, &mut, &wg)
         }
         wg.Wait()
-    } else {
-        // Draw la grille actuelle
-        for pos, draw := range toDraw {
-            if draw {
-                b.cellImg[pos] = b.GridAt(pos).Draw(b.cellImg[pos], b.UI().SubStrokeWidth, b.UI().SubGridColor)
-                toDraw[pos] = false
-            }
-        }
     }
     
     for pos, img := range b.cellImg {
+        if toDraw[pos] {
+            img = b.GridAt(pos).Draw(b.cellImg[pos], b.UI().SubStrokeWidth, b.UI().SubGridColor)
+            b.cellImg[pos] = img
+            toDraw[pos] = false
+        }
         x, y := pos.GetXY()
         opts := &ebiten.DrawImageOptions{}
         opts.GeoM.Translate(float64(x)*colW, float64(y)*rowH)
