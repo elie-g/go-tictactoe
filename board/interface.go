@@ -4,38 +4,45 @@ import (
     "github.com/DrunkenPoney/go-tictactoe/board/ui"
     . "github.com/DrunkenPoney/go-tictactoe/grid"
     "github.com/DrunkenPoney/go-tictactoe/grid/tile"
-    "github.com/DrunkenPoney/go-tictactoe/position"
+    . "github.com/DrunkenPoney/go-tictactoe/position"
     "github.com/hajimehoshi/ebiten"
 )
 
-var DefaultPosition = position.MIDDLE_CENTER
+var DefaultPosition = MIDDLE_CENTER
 
 type Board interface {
-    Grids() map[position.Position]TileGrid
+    Grids() map[Position]TileGrid
     CurrentGrid() TileGrid
-    GetCurrentPos() position.Position
-    SetCurrentPos(pos position.Position)
-    GetTileUnderCursor() *tile.Tile
+    GridAt(pos Position) TileGrid
+    GetCurrentPos() Position
+    SetCurrentPos(pos Position)
+    GetPreviousPos() Position
+    GetTileUnderCursor() (*tile.Tile, Position)
     ResetAll()
+    DrawTile(pos Position, subPos Position)
     DrawBoard(screen *ebiten.Image)
     UI() *ui.BoardUI
 }
 
 type board struct {
-    grids  map[position.Position]TileGrid
-    pos    position.Position
-    screen *ebiten.Image
-    bui    *ui.BoardUI
+    grids   map[Position]TileGrid
+    pos     Position
+    prevPos Position
+    screen  *ebiten.Image
+    bui     *ui.BoardUI
+    cellImg map[Position]*ebiten.Image
 }
 
 func NewBoard() Board {
-    grids := make(map[position.Position]TileGrid)
-    for i := 0; i < 9; i++ {
-        grids[position.Position(i)] = NewGrid(3, 3, &tile.Tile{Value: tile.EMPTY})
+    grids := make(map[Position]TileGrid)
+    for i := 1; i <= 9; i++ {
+        grids[Position(i)] = NewGrid(3, 3, &tile.Tile{Value: tile.EMPTY})
     }
     return &board{
-        grids: grids,
-        pos: DefaultPosition,
-        bui: ui.DefaultBoardUI(),
+        grids:   grids,
+        pos:     DefaultPosition,
+        prevPos: INVALID,
+        bui:     ui.DefaultBoardUI(),
+        cellImg: make(map[Position]*ebiten.Image),
     }
 }

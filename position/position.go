@@ -3,9 +3,9 @@ package position
 type Position int
 
 /* Les nombres sont attribués selon la formule: 1 + x + 3y
- * [0][1][2]
- * [3][4][5]
- * [6][7][8]
+ * [1][2][3]
+ * [4][5][6]
+ * [7][8][9]
  */
 //noinspection GoUnusedConst,GoSnakeCaseUsage
 const (
@@ -30,6 +30,11 @@ func (p Position) GetXY() (int, int) {
     return int(x), int(y)
 }
 
+func (p Position) GetXYFloat() (float64, float64) {
+    x, y := p.GetXY()
+    return float64(x), float64(y)
+}
+
 func (p Position) Opposite() Position {
     pos := p
     if p != INVALID {
@@ -41,7 +46,7 @@ func (p Position) Opposite() Position {
 
 func PositionAt(x int, y int) Position {
     pos := 1 + x + (3 * y)
-    if pos < 0 || pos > 8 {
+    if pos < 0 || pos > 9 {
         pos = 0
     }
     return Position(pos)

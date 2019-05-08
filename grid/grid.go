@@ -11,7 +11,9 @@ func (g TileGrid) Clone() TileGrid {
     ng := make([][]*Tile, len(g))
     for col, rows := range g {
         ng[col] = make([]*Tile, len(rows))
-        copy(ng[col], rows)
+        for row, cell := range rows {
+            ng[col][row] = cell.Clone()
+        }
     }
     return ng
 }

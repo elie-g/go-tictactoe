@@ -46,14 +46,14 @@ type game struct {
 
 // Private
 func (g *game) onClick() {
-    t := g.board.GetTileUnderCursor()
+    t, pos := g.board.GetTileUnderCursor()
     if t != nil && t.Value == EMPTY {
         if g.playerO.IsCurrent() {
             t.Value = O
         } else {
             t.Value = X
         }
-        
+        g.GetBoard().DrawTile(pos, t.Position)
         g.GetBoard().SetCurrentPos(t.Position)
         g.NextTurn()
     }
@@ -107,16 +107,12 @@ func (g *game) GetWinningPos(tiles grid.TileGrid) Position {
 }
 
 func (g *game) NextTurn() Game {
-    for {
-        g.GetWinnerFromGrid(g.board.CurrentGrid())
-        g.playerX.SetCurrent(!g.playerX.IsCurrent())
-        g.playerO.SetCurrent(!g.playerO.IsCurrent())
-        
-        if g.playerX.IsCurrent() {
-            g.PlayAINextMove()
-        } else {
-            break
-        }
+    g.GetWinnerFromGrid(g.board.CurrentGrid())
+    g.playerX.SetCurrent(!g.playerX.IsCurrent())
+    g.playerO.SetCurrent(!g.playerO.IsCurrent())
+    
+    if g.playerX.IsCurrent() {
+        g.PlayAINextMove()
     }
     return g
 }
@@ -138,6 +134,10 @@ func (g *game) GetCurrentPlayer() player.Player {
     }
     return cur
 }
+
+
+/////////////////////////////////////////////////////////////////// AI
+
 
 func (g *game) PlayAINextMove() {
     var posibility = g.GetPosibility()

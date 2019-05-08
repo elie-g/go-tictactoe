@@ -2,32 +2,28 @@ package board
 
 import (
     . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
-    "github.com/DrunkenPoney/go-tictactoe/position"
+    . "github.com/DrunkenPoney/go-tictactoe/position"
     "github.com/hajimehoshi/ebiten"
 )
 
-func (g *board) GetTileUnderCursor() *Tile {
-    if g.screen == nil {
-        return nil
-    }
+func (b *board) GetTileUnderCursor() (*Tile, Position) {
+    if b.screen != nil {
+        ciX, ciY := ebiten.CursorPosition()
+        wi, hi := b.screen.Size()
+        w, h := float64(wi), float64(hi)
     
-    cursorX, cursorY := ebiten.CursorPosition()
+        if ciX >= 0 && ciY >= 0 && ciX <= wi && ciY <= hi {
+            w, h = w/3, h/3 // 3 = nb de sous-grilles
+            wi, hi = int(w), int(h)
+            pos := PositionAt(ciX/wi, ciY/hi)
     
-    if cursorX >= 0 && cursorY >= 0 {
-        width, height := g.screen.Size()
-        width = width / 3 // 3 = nb de sous-grilles
-        height = height / 3
-        
-        pos := position.PositionAt(cursorX/width, cursorY/height)
-        // Si curseur est dans la sous-grille actuelle
-        if pos == g.GetCurrentPos() {
-            x, y := pos.GetXY()
-            x, y = (width*x)/(width/3), (height*y)/(height/3)
-            if subPos := position.PositionAt(x, y); subPos != position.INVALID {
-                return g.grids[pos].At(subPos)
+            x, y := pos.GetXYFloat()
+            x, y = (w*x)/(w/3), (h*y)/(h/3)
+            if subPos := PositionAt(int(x), int(y)); subPos != INVALID {
+                return b.grids[pos].At(subPos), pos
             }
         }
     }
     
-    return nil
+    return nil, INVALID
 }

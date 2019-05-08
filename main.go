@@ -7,6 +7,7 @@ import (
 	g "github.com/DrunkenPoney/go-tictactoe/game"
 	"github.com/DrunkenPoney/go-tictactoe/game/player"
 	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
+	"github.com/DrunkenPoney/go-tictactoe/internal"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
@@ -24,16 +25,17 @@ func update(screen *ebiten.Image) error {
 
 	if activeTile != nil {
 		activeTile.Active = false
+		game.GetBoard().DrawTile(game.GetBoard().GetCurrentPos(), activeTile.Position)
 	}
 
-	if activeTile = game.GetBoard().GetTileUnderCursor(); activeTile != nil {
+	if activeTile, _ = game.GetBoard().GetTileUnderCursor(); activeTile != nil {
 		activeTile.Active = true
+		game.GetBoard().DrawTile(game.GetBoard().GetCurrentPos(), activeTile.Position)
 	}
 
 	game.Draw(screen)
 
 	_ = ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f, TPS: %f", ebiten.CurrentFPS(), ebiten.CurrentTPS()))
-
 	return nil
 }
 
@@ -86,7 +88,7 @@ func main() {
 	// grid.GetTileAt(2, 0).SetValue(tile.X)
 	// grid.GetTileAt(2, 1).SetValue(tile.O)
 
-	if err := ebiten.Run(update, 800, 800, 1, "Go Tic-Tac-Toe"); err != nil {
+	if err := ebiten.Run(update, int(internal.ScaleWidth(800)), int(internal.ScaleHeight(800)), 1, "Go Tic-Tac-Toe"); err != nil {
 		log.Fatalln(err)
 	}
 }
