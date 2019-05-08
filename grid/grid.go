@@ -21,7 +21,7 @@ func (g TileGrid) At(pos Position) *Tile {
     return g[x][y]
 }
 
-func (g *TileGrid) Reset() {
+func (g TileGrid) Reset() {
     for _, rows := range g {
         for _, tile := range rows {
             tile.Active = false
