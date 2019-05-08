@@ -3,19 +3,20 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/DrunkenPoney/go-tictactoe/board"
 	"github.com/DrunkenPoney/go-tictactoe/events"
 	g "github.com/DrunkenPoney/go-tictactoe/game"
 	"github.com/DrunkenPoney/go-tictactoe/game/player"
+	. "github.com/DrunkenPoney/go-tictactoe/grid"
 	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	. "image/color"
 	"log"
 )
 
 // var grid Board
-var activeTile *tile.Tile
+var activeTile tile.Tile
 var game g.Game
 
 func update(screen *ebiten.Image) error {
@@ -24,11 +25,11 @@ func update(screen *ebiten.Image) error {
 	}
 
 	if activeTile != nil {
-		activeTile.Active = false
+		activeTile.SetActive(false)
 	}
 
 	if activeTile = game.GetBoard().GetTileUnderCursor(); activeTile != nil {
-		activeTile.Active = true
+		activeTile.SetActive(true)
 	}
 
 	game.Draw(screen)
@@ -77,7 +78,7 @@ func main() {
 
 
 	// go clickListener()
-	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), board.NewBoard())
+	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), board.NewGrid(9, 9, White, 10))
 	// grid = NewGrid(3, 3, White, 10)
 
 	// grid.GetTileAt(1, 1).SetValue(tile.X)
