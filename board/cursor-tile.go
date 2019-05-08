@@ -23,14 +23,10 @@ func (g *board) GetTileUnderCursor() *Tile {
         if pos == g.GetCurrentPos() {
             x, y := pos.GetXY()
             x, y = (width*x)/(width/3), (height*y)/(height/3)
-            
+            if subPos := position.PositionAt(x, y); subPos != position.INVALID {
+                return g.grids[pos].At(subPos)
+            }
         }
-        
-        if cursorX <= width && cursorY <= height {
-            col, row := cursorX/(width/g.columns), cursorY/(height/g.rows)
-            return g.TileAt(col, row)
-        }
-        
     }
     
     return nil

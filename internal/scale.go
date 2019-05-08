@@ -24,3 +24,8 @@ func ScaleHeight(h float64) float64 {
     _, sH := ScaleFactors()
     return sH * h
 }
+
+func Scale(val float64) float64 {
+    x, y := ScaleFactors()
+    return ((x * val) + (y * val)) / 2
+}

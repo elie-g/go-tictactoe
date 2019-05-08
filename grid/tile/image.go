@@ -1,6 +1,7 @@
 package tile
 
 import (
+	"github.com/DrunkenPoney/go-tictactoe/internal"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/peterhellberg/gfx"
 	"image/color"
@@ -73,11 +74,11 @@ func (t *Tile) GetImage() *ebiten.Image {
 			tr := gfx.V((1-r)*w, r*h)
 			bl := gfx.V(r*w, (1-r)*h)
 			br := gfx.V((1-r)*w, (1-r)*h)
-			gfx.DrawLine(img, tl, br, THICKNESS, stroke)
-			gfx.DrawLine(img, tr, bl, THICKNESS, stroke)
+			gfx.DrawLine(img, tl, br, internal.Scale(THICKNESS), stroke)
+			gfx.DrawLine(img, tr, bl, internal.Scale(THICKNESS), stroke)
 		case O:
 			center := gfx.V(float64(img.Rect.Dx())/2, float64(img.Rect.Dy())/2)
-			gfx.DrawCircle(img, center, 0.7*(float64(img.Rect.Dx())/2), THICKNESS*1.6, stroke)
+			gfx.DrawCircle(img, center, 0.7*(float64(img.Rect.Dx())/2), internal.Scale(THICKNESS*1.6), stroke)
 		case EMPTY:
 			// Do nothing
 		}
