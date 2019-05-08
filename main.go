@@ -8,6 +8,7 @@ import (
 	"github.com/DrunkenPoney/go-tictactoe/game/player"
 	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	"github.com/DrunkenPoney/go-tictactoe/internal"
+	. "github.com/DrunkenPoney/go-tictactoe/position"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
@@ -15,6 +16,7 @@ import (
 )
 
 var activeTile *tile.Tile
+var activePos Position
 var game g.Game
 
 func update(screen *ebiten.Image) error {
@@ -24,12 +26,12 @@ func update(screen *ebiten.Image) error {
 
 	if activeTile != nil {
 		activeTile.Active = false
-		game.GetBoard().DrawTile(game.GetBoard().GetCurrentPos(), activeTile.Position)
+		game.GetBoard().DrawTile(activeTile, activePos)
 	}
 
-	if activeTile, _ = game.GetBoard().GetTileUnderCursor(); activeTile != nil {
+	if activeTile, activePos = game.GetBoard().GetTileUnderCursor(); activeTile != nil {
 		activeTile.Active = true
-		game.GetBoard().DrawTile(game.GetBoard().GetCurrentPos(), activeTile.Position)
+		game.GetBoard().DrawTile(activeTile, activePos)
 	}
 
 	game.Draw(screen)

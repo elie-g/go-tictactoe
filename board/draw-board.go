@@ -2,6 +2,7 @@ package board
 
 import (
     "github.com/DrunkenPoney/go-tictactoe/grid"
+    "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     "github.com/DrunkenPoney/go-tictactoe/internal"
     . "github.com/DrunkenPoney/go-tictactoe/position"
     "github.com/hajimehoshi/ebiten"
@@ -71,14 +72,14 @@ func (b *board) ResetGrid(wi int, hi int) {
     gridImg, _ = ebiten.NewImageFromImage(img.SubImage(img.Rect), ebiten.FilterDefault)
 }
 
-func (b *board) DrawTile(pos Position, subPos Position) {
-    b.GridAt(pos).DrawTile(b.cellImg[pos], subPos)
+func (b *board) DrawTile(t *tile.Tile, pos Position) {
+    b.GridAt(pos).DrawTile(b.cellImg[pos], t.Position)
     b.SetGridToDraw(pos)
 }
 
 func (b *board) DrawTileUnderCursor() {
-    tile, pos := b.GetTileUnderCursor()
-    b.DrawTile(pos, tile.Position)
+    t, pos := b.GetTileUnderCursor()
+    b.DrawTile(t, pos)
     b.SetGridToDraw(pos)
 }
 

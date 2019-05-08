@@ -53,7 +53,7 @@ func (g *game) onClick() {
         } else {
             t.Value = X
         }
-        g.GetBoard().DrawTile(pos, t.Position)
+        g.GetBoard().DrawTile(t, pos)
         g.GetBoard().SetCurrentPos(t.Position)
         g.NextTurn()
     }

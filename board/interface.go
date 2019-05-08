@@ -19,9 +19,12 @@ type Board interface {
     GetPreviousPos() Position
     GetTileUnderCursor() (*tile.Tile, Position)
     ResetAll()
-    DrawTile(pos Position, subPos Position)
-    DrawBoard(screen *ebiten.Image)
     UI() *ui.BoardUI
+    
+    DrawBoard(screen *ebiten.Image)
+    DrawTile(t *tile.Tile, pos Position)
+    DrawTileUnderCursor()
+    SetGridToDraw(pos Position)
 }
 
 type board struct {
