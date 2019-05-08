@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/DrunkenPoney/go-tictactoe/board"
 	"github.com/DrunkenPoney/go-tictactoe/events"
@@ -52,26 +51,26 @@ func main() {
 
 
 	// Open up our database connection.
-	db, err := sql.Open("mysql", "tp3-veille:tp3@tcp(159.203.13.220:3306)/tp3-veille")
+	// db, err := sql.Open("mysql", "tp3-veille:tp3@tcp(159.203.13.220:3306)/tp3-veille")
 
 	// if there is an error opening the connection, handle it
-	if err != nil {
-		panic(err.Error())
-	}
-
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	
 	// defer the close till after the main function has finished
 	// executing
-	defer db.Close()
+	// defer db.Close()
 
 
-	insert, err := db.Query("INSERT INTO partie VALUES ( 1, 1)")
+	// insert, err := db.Query("INSERT INTO partie VALUES ( 1, 1)")
 
 	// if there is an error inserting, handle it
-	if err != nil {
-		panic(err.Error())
-	}
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
 	// be careful deferring Queries if you are using transactions
-	defer insert.Close()
+	// defer insert.Close()
 
 
 

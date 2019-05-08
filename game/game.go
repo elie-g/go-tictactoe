@@ -47,7 +47,7 @@ type game struct {
 // Private
 func (g *game) onClick() {
     t := g.board.GetTileUnderCursor()
-    if t.Value == EMPTY {
+    if t != nil && t.Value == EMPTY {
         if g.playerO.IsCurrent() {
             t.Value = O
         } else {
