@@ -1,12 +1,10 @@
 package tile
 
 import (
-    "fmt"
     "github.com/DrunkenPoney/go-tictactoe/internal"
     "github.com/hajimehoshi/ebiten"
     "github.com/peterhellberg/gfx"
     "image/color"
-    "sync"
 )
 
 const (
@@ -25,7 +23,6 @@ const (
 )
 
 var tileImages = make(map[uint8]*ebiten.Image)
-var mut sync.Mutex
 
 func (t *Tile) GetImage() *ebiten.Image {
     id := _DEFAULT_
@@ -64,6 +61,7 @@ func (t *Tile) GetImage() *ebiten.Image {
             c = color.RGBA{R: 0x00, G: 0x44, B: 0x00, A: 0x99}
             stroke = color.RGBA{R: 0x66, G: 0xFF, B: 0x33, A: 0x99}
         } else {
+            c = color.Black
             stroke = color.White
         }
         if c != nil {
@@ -87,9 +85,7 @@ func (t *Tile) GetImage() *ebiten.Image {
             // Do nothing
         }
         
-        
         tileImages[id], _ = ebiten.NewImageFromImage(img.SubImage(img.Rect), ebiten.FilterDefault)
-        fmt.Printf("ID: %d, IMG: %v\n", id, tileImages[id])
     }
     return tileImages[id]
 }

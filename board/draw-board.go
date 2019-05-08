@@ -9,7 +9,7 @@ import (
     "sync"
 )
 
-var gridImg *ebiten.Image
+var gridImg, boardImg *ebiten.Image
 var toDraw = make(map[Position]bool)
 
 func (b *board) DrawBoard(screen *ebiten.Image) {
@@ -20,6 +20,7 @@ func (b *board) DrawBoard(screen *ebiten.Image) {
     
     // Initialise la grille princial
     if gridImg == nil {
+        boardImg, _ = ebiten.NewImage(wi, hi, ebiten.FilterDefault)
         b.ResetGrid(wi, hi)
     }
     
@@ -50,10 +51,11 @@ func (b *board) DrawBoard(screen *ebiten.Image) {
         x, y := pos.GetXY()
         opts := &ebiten.DrawImageOptions{}
         opts.GeoM.Translate(float64(x)*colW, float64(y)*rowH)
-        _ = gridImg.DrawImage(img, opts)
+        _ = boardImg.DrawImage(img, opts)
     }
     
-    _ = screen.DrawImage(gridImg, &ebiten.DrawImageOptions{})
+    _ = boardImg.DrawImage(gridImg, &ebiten.DrawImageOptions{})
+    _ = screen.DrawImage(boardImg, &ebiten.DrawImageOptions{})
 }
 
 func (b *board) ResetGrid(wi int, hi int) {

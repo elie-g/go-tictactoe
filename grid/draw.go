@@ -60,5 +60,6 @@ func (g TileGrid) DrawTile(screen *ebiten.Image, pos Position) {
     opts := &ebiten.DrawImageOptions{}
     opts.GeoM.Scale(scale, scale)
     opts.GeoM.Translate(float64(x) * colW, float64(y) * rowH)
+    
     _ = screen.DrawImage(img, opts)
 }
