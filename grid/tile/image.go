@@ -24,18 +24,18 @@ const (
 
 var tileImages = make(map[uint8]*ebiten.Image)
 
-func (t *tile) GetImage() *ebiten.Image {
+func (t *Tile) GetImage() *ebiten.Image {
 	id := _DEFAULT_
-	if t.GetValue() == X {
+	if t.Value == X {
 		id |= _X_
 	}
-	if t.GetValue() == O {
+	if t.Value == O {
 		id |= _O_
 	}
-	if t.IsActive() {
+	if t.Active {
 		id |= _ACTIVE_
 	}
-	if t.IsWinning() {
+	if t.Winning {
 		id |= _WINNING_
 	}
 
@@ -49,13 +49,13 @@ func (t *tile) GetImage() *ebiten.Image {
 		}
 
 		var c, stroke color.Color
-		if t.IsActive() && t.IsWinning() {
+		if t.Active && t.Winning {
 			c = color.RGBA{R: 0x00, G: 0xFF, B: 0x00, A: 0xFF}
 			stroke = color.RGBA{R: 0x00, G: 0x33, B: 0x00, A: 0xEE}
-		} else if t.IsActive() {
+		} else if t.Active {
 			c = color.RGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xFF}
 			stroke = color.Black
-		} else if t.IsWinning() {
+		} else if t.Winning {
 			c = color.RGBA{R: 0x00, G: 0x44, B: 0x00, A: 0x99}
 			stroke = color.RGBA{R: 0x66, G: 0xFF, B: 0x33, A: 0x99}
 		} else {
@@ -65,7 +65,7 @@ func (t *tile) GetImage() *ebiten.Image {
 			gfx.DrawPolygon(img, rect, 0, c)
 		}
 
-		switch t.GetValue() {
+		switch t.Value {
 		case X:
 			w, h := float64(img.Rect.Dx()), float64(img.Rect.Dy())
 			r := 0.2

@@ -1,43 +1,49 @@
 package grid
 
 import (
-	"github.com/hajimehoshi/ebiten"
-	"github.com/peterhellberg/gfx"
-	"image/color"
-	"math"
+    "github.com/DrunkenPoney/go-tictactoe/internal"
+    "github.com/hajimehoshi/ebiten"
+    "github.com/peterhellberg/gfx"
+    "image/color"
+    "math"
 )
 
-func (g *grid) DrawGrid(screen *ebiten.Image) {
-	width, height := float64(screen.Bounds().Dx()), float64(screen.Bounds().Dy())
-	colWidth, rowHeight := width/float64(g.columns), height/float64(g.rows)
-	img, _ := ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy(), ebiten.FilterDefault)
+var gridImage *ebiten.Image
 
-	_ = img.Fill(color.Black)
-	for i, col := range g.GetTiles() {
-		x := float64(i) * colWidth
-		for j, tile := range col {
-			y := float64(j) * rowHeight
-			tileImg := tile.GetImage()
-			if tileImg != nil {
-				opts := &ebiten.DrawImageOptions{}
-				scale := math.Min(colWidth, rowHeight) / float64(tileImg.Bounds().Dx())
-				opts.GeoM.Scale(scale, scale)
-				opts.GeoM.Translate(x, y)
-				_ = img.DrawImage(tileImg, opts)
-			}
-		}
-	}
-
-	// Grid lines (#)
-	im := gfx.NewImage(int(width), int(height))
-	for x := colWidth; x < (width - (colWidth / 2)); x += colWidth {
-		gfx.DrawLine(im, gfx.V(x, 0), gfx.V(x, height), g.strokeWidth, g.color)
-	}
-	for y := rowHeight; y < (height - (rowHeight / 2)); y += rowHeight {
-		gfx.DrawLine(im, gfx.V(0, y), gfx.V(width, y), g.strokeWidth, g.color)
-	}
-	newImg, _ := ebiten.NewImageFromImage(im.SubImage(im.Rect), ebiten.FilterDefault)
-	_ = img.DrawImage(newImg, &ebiten.DrawImageOptions{})
-	_ = screen.DrawImage(img, &ebiten.DrawImageOptions{})
-	g.img = img
+func (g TileGrid) Draw(screen *ebiten.Image, strokeWidth float64, strokeColor color.Color) *ebiten.Image {
+    width, height := float64(screen.Bounds().Dx()), float64(screen.Bounds().Dy())
+    colWidth, rowHeight := width/float64(len(g)), height/float64(len(g[0]))
+    img, _ := ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy(), ebiten.FilterDefault)
+    
+    _ = img.Fill(color.Black)
+    for i, col := range g {
+        x := float64(i) * colWidth
+        for j, tile := range col {
+            y := float64(j) * rowHeight
+            tileImg := tile.GetImage()
+            if tileImg != nil {
+                opts := &ebiten.DrawImageOptions{}
+                scale := math.Min(colWidth, rowHeight) / float64(tileImg.Bounds().Dx())
+                opts.GeoM.Scale(scale, scale)
+                opts.GeoM.Translate(x, y)
+                _ = img.DrawImage(tileImg, opts)
+            }
+        }
+    }
+    
+    // Board lines (#)
+    if gridImage == nil {
+        im := gfx.NewImage(int(width), int(height))
+        for x := colWidth; x < (width - (colWidth / 2)); x += colWidth {
+            gfx.DrawLine(im, gfx.V(x, 0), gfx.V(x, height), internal.ScaleWidth(strokeWidth), strokeColor)
+        }
+        for y := rowHeight; y < (height - (rowHeight / 2)); y += rowHeight {
+            gfx.DrawLine(im, gfx.V(0, y), gfx.V(width, y), internal.ScaleHeight(strokeWidth), strokeColor)
+        }
+        gridImage, _ = ebiten.NewImageFromImage(im.SubImage(im.Rect), ebiten.FilterDefault)
+    }
+    
+    _ = img.DrawImage(gridImage, &ebiten.DrawImageOptions{})
+    _ = screen.DrawImage(img, &ebiten.DrawImageOptions{})
+    return img
 }

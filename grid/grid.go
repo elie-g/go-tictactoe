@@ -1,230 +1,44 @@
 package grid
 
 import (
-	. "github.com/DrunkenPoney/go-tictactoe/grid/tile"
-	"github.com/hajimehoshi/ebiten"
-	. "image/color"
+    . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
+    . "github.com/DrunkenPoney/go-tictactoe/position"
 )
 
-type Grid interface {
-	Columns() int
-	Rows() int
+type TileGrid [][]*Tile
 
-	GetTiles() [][]Tile
-	GetTileAt(x int, y int) Tile
-
-	DrawGrid(image *ebiten.Image)
-
-	GetColor() Color
-	SetColor(color Color) Grid
-
-	GetStrokeWidth() float64
-	SetStrokeWidth(w float64) Grid
-
-	GetTileUnderCursor() Tile
-
-	GetGridNumber() int
-	SetGridNumber(position []int) Grid
-	SetGridNumberFromInt(position int) Grid
-
-	GetColOffset() int
-	GetRowOffset() int
-
-	GetCurrentGrid() [][]Tile
-
-	Reset() Grid
+func (g TileGrid) Clone() TileGrid {
+    ng := make([][]*Tile, len(g))
+    for col, rows := range g {
+        ng[col] = make([]*Tile, len(rows))
+        copy(ng[col], rows)
+    }
+    return ng
 }
 
-func NewGrid(columns int, rows int, color Color, strokeWidth float64) Grid {
-	tiles := make([][]Tile, columns)
-	for x := range tiles {
-		tiles[x] = make([]Tile, rows)
-		for y := range tiles[x] {
-			tiles[x][y] = NewTile(EMPTY, []int{x, y})
-
-		}
-	}
-	return &grid{tiles, columns, rows, color, strokeWidth, nil, 0}
+func (g TileGrid) At(pos Position) *Tile {
+    x, y := pos.GetXY()
+    return g[x][y]
 }
 
-type grid struct {
-	tiles       [][]Tile
-	columns     int
-	rows        int
-	color       Color
-	strokeWidth float64
-	img         *ebiten.Image
-	gridNumber  int
+func (g *TileGrid) Reset() {
+    for _, rows := range g {
+        for _, tile := range rows {
+            tile.Active = false
+            tile.Winning = false
+            tile.Value = EMPTY
+        }
+    }
 }
 
-func (g *grid) Columns() int {
-	return g.columns
-}
-
-func (g *grid) Rows() int {
-	return g.rows
-}
-
-func (g *grid) GetTiles() [][]Tile {
-	return g.tiles
-}
-
-func (g *grid) GetTileAt(x int, y int) Tile {
-	return g.tiles[x][y]
-}
-
-func (g *grid) GetColor() Color {
-	return g.color
-}
-
-func (g *grid) SetColor(color Color) Grid {
-	g.color = color
-	return g
-}
-
-func (g *grid) GetStrokeWidth() float64 {
-	return g.strokeWidth
-}
-
-func (g *grid) SetStrokeWidth(w float64) Grid {
-	g.strokeWidth = w
-	return g
-}
-
-func (g *grid) GetGridNumber() int {
-	return g.gridNumber
-}
-
-/*func (g *grid) SetGridNumber(position []int) Grid {
-	var number int
-	var col int
-	col = int(math.Ceil(float64(position[0]) / 3))
-	var row int
-	row = int(math.Ceil(float64(position[1]) / 3))
-
-	switch col {
-	case 1:
-		switch row {
-		case 1:
-			number = 1
-		case 2:
-			number = 4
-		case 3:
-			number = 7
-		}
-	case 2:
-		switch row {
-		case 1:
-			number = 2
-		case 2:
-			number = 5
-		case 3:
-			number = 8
-		}
-	case 3:
-		switch row {
-		case 1:
-			number = 3
-		case 2:
-			number = 6
-		case 3:
-			number = 9
-		}
-	}
-
-	g.gridNumber = number
-	return g
-}*/
-
-func (g *grid) SetGridNumber(position []int) Grid {
-	var number int
-	var col int
-	col = int(position[0]%3) + 1
-	var row int
-	row = int(position[1]%3) + 1
-
-	switch col {
-	case 1:
-		switch row {
-		case 1:
-			number = 1
-		case 2:
-			number = 4
-		case 3:
-			number = 7
-		}
-	case 2:
-		switch row {
-		case 1:
-			number = 2
-		case 2:
-			number = 5
-		case 3:
-			number = 8
-		}
-	case 3:
-		switch row {
-		case 1:
-			number = 3
-		case 2:
-			number = 6
-		case 3:
-			number = 9
-		}
-	}
-
-	g.gridNumber = number
-	return g
-}
-
-func (g *grid) SetGridNumberFromInt(position int) Grid {
-	g.gridNumber = position
-	return g
-}
-
-func (g *grid) GetColOffset() int {
-	var offset int
-	offset = 0
-	if g.gridNumber%3 == 2 {
-		offset = 3
-	}
-	if g.gridNumber%3 == 0 {
-		offset = 6
-	}
-	return offset
-}
-
-func (g *grid) GetRowOffset() int {
-	var offset int
-	offset = 0
-	if g.gridNumber == 4 || g.gridNumber == 5 || g.gridNumber == 6 {
-		offset = 3
-	}
-	if g.gridNumber == 7 || g.gridNumber == 8 || g.gridNumber == 9 {
-		offset = 6
-	}
-	return offset
-}
-
-func (g *grid) GetCurrentGrid() [][]Tile {
-	currentGrid := make([][]Tile, 3)
-	for x := range currentGrid {
-		currentGrid[x] = make([]Tile, 3)
-		for y := range currentGrid[x] {
-			currentGrid[x][y] = g.GetTileAt(x+g.GetColOffset(), y+g.GetRowOffset())
-		}
-	}
-
-	return currentGrid
-}
-
-func (g *grid) Reset() Grid {
-	for x, col := range g.tiles {
-		for y := range col {
-			g.tiles[x][y].SetActive(false)
-			g.tiles[x][y].SetWinning(false)
-			g.tiles[x][y].SetValue(EMPTY)
-		}
-	}
-	return g
+func NewGrid(w int, h int, tile *Tile) TileGrid {
+    grid := make([][]*Tile, w)
+    for x := range grid {
+        grid[x] = make([]*Tile, h)
+        for y := range grid[x] {
+            grid[x][y] = tile.Clone()
+            grid[x][y].Position = PositionAt(x, y)
+        }
+    }
+    return grid
 }

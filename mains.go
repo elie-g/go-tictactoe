@@ -15,7 +15,7 @@ import (
 	"log"
 )
 
-// var grid Grid
+// var grid Board
 var activeTile tile.Tile
 var game g.Game
 
@@ -78,7 +78,7 @@ func main() {
 
 
 	// go clickListener()
-	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), NewGrid(9, 9, White, 10))
+	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), board.NewGrid(9, 9, White, 10))
 	// grid = NewGrid(3, 3, White, 10)
 
 	// grid.GetTileAt(1, 1).SetValue(tile.X)

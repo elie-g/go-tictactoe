@@ -2,9 +2,9 @@ package game
 
 import (
 	"fmt"
+	"github.com/DrunkenPoney/go-tictactoe/board"
 	"github.com/DrunkenPoney/go-tictactoe/events"
 	"github.com/DrunkenPoney/go-tictactoe/game/player"
-	"github.com/DrunkenPoney/go-tictactoe/grid"
 	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	"github.com/hajimehoshi/ebiten"
 	"math/rand"
@@ -14,14 +14,14 @@ type Game interface {
 	GetPlayerO() player.Player
 	GetPlayerX() player.Player
 	NextTurn() Game
-	GetBoard() grid.Grid
+	GetBoard() board.Board
 	GetWinnerFromGivinGrid(tiles [][]tile.Tile) player.Player
 	GetCurrentPlayer() player.Player
 	Reset() Game
 	Draw(screen *ebiten.Image) Game
 }
 
-func NewGame(playerO player.Player, playerX player.Player, board grid.Grid) Game {
+func NewGame(playerO player.Player, playerX player.Player, board board.Board) Game {
 	if !playerO.IsCurrent() && !playerX.IsCurrent() ||
 		playerO.IsCurrent() && playerX.IsCurrent() {
 		rdm := rand.Float64() >= 0.5
@@ -38,7 +38,7 @@ func NewGame(playerO player.Player, playerX player.Player, board grid.Grid) Game
 type game struct {
 	playerO       player.Player
 	playerX       player.Player
-	board         grid.Grid
+	board         board.Board
 	clickListener events.ClickListener
 }
 
@@ -65,7 +65,7 @@ func (g *game) GetPlayerX() player.Player {
 	return g.playerX
 }
 
-func (g *game) GetBoard() grid.Grid {
+func (g *game) GetBoard() board.Board {
 	return g.board
 }
 
@@ -151,8 +151,8 @@ func (g *game) CanWin(currentGrid [][]tile.Tile) []int {
 	return winningTilePosition
 }
 
-//à revoir, je suis incapable de copier current grid sans que gridTempo modifie les valeurs de currentGrid par la suite
-//ex:gridTempo = currentGrid
+// à revoir, je suis incapable de copier current grid sans que gridTempo modifie les valeurs de currentGrid par la suite
+// ex:gridTempo = currentGrid
 func (g *game) CreateGridTempo(currentGrid [][]tile.Tile) [][]tile.Tile {
 	gridTempo := make([][]tile.Tile, 3)
 	for x := range gridTempo {
@@ -225,8 +225,8 @@ func (g *game) GetPosibility() [][]int {
 
 func (g *game) GetNextMove(choices [][]int) []int {
 	var choice []int
-
-	//s'il peut gagner, il effectue directement le choix de gagner
+	
+	// s'il peut gagner, il effectue directement le choix de gagner
 	if len(g.CanWin(g.GetBoard().GetCurrentGrid())) != 0 {
 		choice = g.CanWin(g.GetBoard().GetCurrentGrid())
 	} else {
@@ -243,7 +243,7 @@ func (g *game) SortChoices(choices [][]int, number int) [][]int {
 		if g.isGridWithO(choices[number]) {
 			choices = remove(choices, number)
 		}
-		return g.SortChoices(choices, (number + 1))
+		return g.SortChoices(choices, number + 1)
 	} else {
 		return choices
 	}
