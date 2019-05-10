@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/DrunkenPoney/go-tictactoe/board"
-	"github.com/DrunkenPoney/go-tictactoe/events"
-	g "github.com/DrunkenPoney/go-tictactoe/game"
+	. "github.com/DrunkenPoney/go-tictactoe/game"
 	"github.com/DrunkenPoney/go-tictactoe/game/player"
 	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	"github.com/DrunkenPoney/go-tictactoe/internal"
@@ -17,7 +16,7 @@ import (
 
 var activeTile *tile.Tile
 var activePos Position
-var game g.Game
+var game Game
 
 func update(screen *ebiten.Image) error {
 	if ebiten.IsDrawingSkipped() {
@@ -40,19 +39,7 @@ func update(screen *ebiten.Image) error {
 	return nil
 }
 
-func clickListener() {
-	for {
-		select {
-		case <-events.MouseClick():
-			println("Mouse clicked!")
-		default:
-		}
-	}
-}
-
 func main() {
-
-
 	// Open up our database connection.
 	// db, err := sql.Open("mysql", "tp3-veille:tp3@tcp(159.203.13.220:3306)/tp3-veille")
 
@@ -75,19 +62,7 @@ func main() {
 	// be careful deferring Queries if you are using transactions
 	// defer insert.Close()
 
-
-
-
-	// go clickListener()
-	game = g.NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), board.NewBoard())
-	// grid = NewGrid(3, 3, White, 10)
-
-	// grid.GetTileAt(1, 1).SetValue(tile.X)
-	// grid.GetTileAt(0, 0).SetValue(tile.O)
-	// grid.GetTileAt(1, 0).SetValue(tile.X)
-	// grid.GetTileAt(2, 2).SetValue(tile.O)
-	// grid.GetTileAt(2, 0).SetValue(tile.X)
-	// grid.GetTileAt(2, 1).SetValue(tile.O)
+	game = NewGame(player.NewPlayer("Joueur 1"), player.NewPlayer("Joueur 2"), board.NewBoard())
 
 	if err := ebiten.Run(update, int(internal.ScaleWidth(800)), int(internal.ScaleHeight(800)), 1, "Go Tic-Tac-Toe"); err != nil {
 		log.Fatalln(err)
