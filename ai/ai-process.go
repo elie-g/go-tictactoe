@@ -6,6 +6,7 @@ import (
     . "github.com/DrunkenPoney/go-tictactoe/board/bgrid"
     . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     . "github.com/DrunkenPoney/go-tictactoe/position"
+    "math/rand"
 )
 
 type AIProcess interface {
@@ -36,6 +37,10 @@ func (p *process) BestMoveFor(tt TileType) Position {
         if (score * mod) > bestScore {
             bestMove, bestScore = pos, score * mod
         }
+    }
+    if bestMove == INVALID {
+        empty := p.prediction.CurrentLayer().Grid().EmptyTiles()
+        bestMove = empty[int(rand.Float64() * float64(len(empty)))].Position
     }
     return bestMove
 }
