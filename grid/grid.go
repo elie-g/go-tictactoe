@@ -7,6 +7,18 @@ import (
 
 type TileGrid [][]*Tile
 
+func NewGrid(w int, h int, tile *Tile) TileGrid {
+    grid := make([][]*Tile, w)
+    for x := range grid {
+        grid[x] = make([]*Tile, h)
+        for y := range grid[x] {
+            grid[x][y] = tile.Clone()
+            grid[x][y].Position = PositionAt(x, y)
+        }
+    }
+    return grid
+}
+
 func (g TileGrid) Clone() TileGrid {
     ng := make([][]*Tile, len(g))
     for col, rows := range g {
@@ -33,14 +45,14 @@ func (g TileGrid) Reset() {
     }
 }
 
-func NewGrid(w int, h int, tile *Tile) TileGrid {
-    grid := make([][]*Tile, w)
-    for x := range grid {
-        grid[x] = make([]*Tile, h)
-        for y := range grid[x] {
-            grid[x][y] = tile.Clone()
-            grid[x][y].Position = PositionAt(x, y)
+func (g TileGrid) EmptyTiles() []*Tile {
+    var empty []*Tile
+    for _, rows := range g {
+        for _, tile := range rows {
+            if tile.Value == EMPTY {
+                empty = append(empty, tile)
+            }
         }
     }
-    return grid
+    return empty
 }

@@ -1,21 +1,22 @@
 package board
 
 import (
+    . "github.com/DrunkenPoney/go-tictactoe/board/bgrid"
     "github.com/DrunkenPoney/go-tictactoe/board/ui"
     . "github.com/DrunkenPoney/go-tictactoe/grid"
     . "github.com/DrunkenPoney/go-tictactoe/position"
 )
 
-func (b *board) Grids() map[Position]TileGrid {
+func (b *board) Grids() BoardGrid {
     return b.grids
 }
 
 func (b *board) GridAt(pos Position) TileGrid {
-    return b.grids[pos]
+    return b.grids.Get(pos)
 }
 
 func (b *board) CurrentGrid() TileGrid {
-    return b.grids[b.pos]
+    return b.grids.Get(b.pos)
 }
 
 func (b *board) GetCurrentPos() Position {

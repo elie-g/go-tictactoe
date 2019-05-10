@@ -2,6 +2,7 @@ package game
 
 import (
     "fmt"
+    "github.com/DrunkenPoney/go-tictactoe/ai"
     "github.com/DrunkenPoney/go-tictactoe/board"
     "github.com/DrunkenPoney/go-tictactoe/events"
     "github.com/DrunkenPoney/go-tictactoe/game/player"
@@ -15,8 +16,9 @@ import (
 type Game interface {
     GetPlayerO() player.Player
     GetPlayerX() player.Player
-    NextTurn() Game
+    NextTurn(pos Position) Game
     GetBoard() board.Board
+    GetAIProcess() ai.AIProcess
     GetWinnerFromGrid(tiles grid.TileGrid) player.Player
     GetCurrentPlayer() player.Player
     Reset() Game
@@ -30,8 +32,14 @@ func NewGame(playerO player.Player, playerX player.Player, board board.Board) Ga
         playerO.SetCurrent(rdm)
         playerX.SetCurrent(!rdm)
     }
+    var aiProcess ai.AIProcess
+    if playerO.IsCurrent() {
+        aiProcess = ai.NewAIProcess(O, board.Grids())
+    } else {
+        aiProcess = ai.NewAIProcess(X, board.Grids())
+    }
     listener := events.NewClickListener()
-    g := &game{playerO, playerX, board, listener}
+    g := &game{playerO, playerX, aiProcess, board, listener}
     listener.Listen(g.onClick)
     listener.Resume()
     return g
@@ -40,6 +48,7 @@ func NewGame(playerO player.Player, playerX player.Player, board board.Board) Ga
 type game struct {
     playerO       player.Player
     playerX       player.Player
+    ai            ai.AIProcess
     board         board.Board
     clickListener events.ClickListener
 }
@@ -54,8 +63,7 @@ func (g *game) onClick() {
             t.Value = X
         }
         g.GetBoard().DrawTile(t, pos)
-        g.GetBoard().SetCurrentPos(t.Position)
-        g.NextTurn()
+        g.NextTurn(t.Position)
     }
 }
 
@@ -69,6 +77,10 @@ func (g *game) GetPlayerX() player.Player {
 
 func (g *game) GetBoard() board.Board {
     return g.board
+}
+
+func (g *game) GetAIProcess() ai.AIProcess {
+    return g.ai
 }
 
 func (g *game) GetWinnerFromGrid(tiles grid.TileGrid) player.Player {
@@ -106,13 +118,23 @@ func (g *game) GetWinningPos(tiles grid.TileGrid) Position {
     return winningTilePosition
 }
 
-func (g *game) NextTurn() Game {
+func (g *game) NextTurn(pos Position) Game {
+    if pos == INVALID {
+        return g
+    }
+    fmt.Printf("-------------------------- NEW TURN --------------------------\n")
     g.GetWinnerFromGrid(g.board.CurrentGrid())
     g.playerX.SetCurrent(!g.playerX.IsCurrent())
     g.playerO.SetCurrent(!g.playerO.IsCurrent())
+    g.ai.PrepareNextTurn(pos)
+    g.GetBoard().SetCurrentPos(pos)
     
     if g.playerX.IsCurrent() {
-        g.PlayAINextMove()
+        bestPos := g.ai.BestMoveFor(X)
+        tile := g.GetBoard().CurrentGrid().At(bestPos)
+        tile.Value = X
+        g.GetBoard().DrawTile(tile, g.GetBoard().GetCurrentPos())
+        g.NextTurn(bestPos)
     }
     return g
 }
@@ -135,9 +157,7 @@ func (g *game) GetCurrentPlayer() player.Player {
     return cur
 }
 
-
-/////////////////////////////////////////////////////////////////// AI
-
+// ///////////////////////////////////////////////////////////////// AI
 
 func (g *game) PlayAINextMove() {
     var posibility = g.GetPosibility()

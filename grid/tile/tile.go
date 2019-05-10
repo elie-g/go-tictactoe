@@ -36,3 +36,14 @@ func (t *Tile) Equals(c *Tile) bool {
             t.Winning == c.Winning &&
             t.Active == c.Active)
 }
+
+func (tt TileType) Opponent() TileType {
+    switch tt {
+    case O:
+        return X
+    case X:
+        return O
+    default:
+        return EMPTY
+    }
+}
