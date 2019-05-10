@@ -30,8 +30,8 @@ func (g *game) NextTurn(pos Position) Game {
 		return g
 	}
 	fmt.Printf("-------------------------- NEW TURN --------------------------\n")
-	winnerPlayer := g.CheckWinnerInGrid(g.board.CurrentGrid())
-	if winnerPlayer == nil {
+	winner := g.CheckWinnerInGrid(g.board.CurrentGrid())
+	if winner == nil {
 		g.playerX.SetCurrent(!g.playerX.IsCurrent())
 		g.playerO.SetCurrent(!g.playerO.IsCurrent())
 		g.ai.PrepareNextTurn(pos)
@@ -45,9 +45,9 @@ func (g *game) NextTurn(pos Position) Game {
 			g.NextTurn(bestPos)
 		}
 	} else {
+		winner.IncrementPoints()
 		ok := dialog.Message("%s", "Do you want to continue?").Title("Are you sure?").YesNo()
 		if ok {
-			winnerPlayer.SetPoints(1)
 			g.Reset()
 		}
 	}
