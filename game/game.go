@@ -45,7 +45,8 @@ func NewGame(playerO Player, playerX Player, board board.Board) Game {
         aiProcess = ai.NewAIProcess(X, board.Grids())
     }
     listener := events.NewClickListener()
-    g := &game{playerO, playerX, aiProcess, board, listener, make(chan State)}
+    g := &game{playerO, playerX, aiProcess, board,
+        listener, make(chan State), RUNNING}
     listener.Listen(g.onClick)
     listener.Resume()
     go func() {
