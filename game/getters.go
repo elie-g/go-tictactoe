@@ -3,6 +3,7 @@ package game
 import (
     "github.com/DrunkenPoney/go-tictactoe/ai"
     "github.com/DrunkenPoney/go-tictactoe/board"
+    "github.com/DrunkenPoney/go-tictactoe/events"
     "github.com/DrunkenPoney/go-tictactoe/game/player"
 )
 
@@ -28,4 +29,8 @@ func (g *game) GetCurrentPlayer() player.Player {
         cur = g.playerX
     }
     return cur
+}
+
+func (g *game) GetClickListener() events.ClickListener {
+    return g.clickListener
 }

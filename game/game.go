@@ -23,6 +23,7 @@ type Game interface {
     GetCurrentPlayer() Player
     
     StateChannel() chan State
+    GetClickListener() events.ClickListener
     
     Resume() // TODO
     Pause()  // TODO
