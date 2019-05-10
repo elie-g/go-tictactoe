@@ -51,7 +51,7 @@ func NewGame(playerO Player, playerX Player, board board.Board) Game {
     listener.Resume()
     go func() {
         for {
-            <-g.stateChan
+            g.onState(<-g.stateChan)
         }
     }()
     return g
