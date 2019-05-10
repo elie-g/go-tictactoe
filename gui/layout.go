@@ -16,6 +16,7 @@ type Layout interface {
     ShowMessage()         // TODO
     GetGame() Game
     NewGame() // TODO Add possibility to pause, resume, stop and restart the game
+    Draw(screen *ebiten.Image)
 }
 
 func NewLayout(playerO string, playerX string) Layout {

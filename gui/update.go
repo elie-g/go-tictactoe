@@ -2,7 +2,6 @@ package gui
 
 import (
     "fmt"
-    _ "github.com/go-sql-driver/mysql"
     "github.com/hajimehoshi/ebiten"
     "github.com/hajimehoshi/ebiten/ebitenutil"
 )
@@ -22,8 +21,7 @@ func (l *layout) Update(screen *ebiten.Image) error {
         l.GetGame().GetBoard().DrawTile(l.activeTile, l.activePos)
     }
     
-    l.GetGame().Draw(screen)
-    
+    l.Draw(screen)
     _ = ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f, TPS: %f", ebiten.CurrentFPS(), ebiten.CurrentTPS()))
     return nil
 }
