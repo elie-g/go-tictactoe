@@ -19,7 +19,7 @@ type Game interface {
     NextTurn(pos Position) Game
     GetBoard() board.Board
     GetAIProcess() ai.AIProcess
-    GetWinnerFromGrid(tiles grid.TileGrid) player.Player
+    CheckWinnerInGrid(tiles grid.TileGrid) player.Player
     GetCurrentPlayer() player.Player
     Reset() Game
     Draw(screen *ebiten.Image) Game
@@ -83,7 +83,7 @@ func (g *game) GetAIProcess() ai.AIProcess {
     return g.ai
 }
 
-func (g *game) GetWinnerFromGrid(tiles grid.TileGrid) player.Player {
+func (g *game) CheckWinnerInGrid(tiles grid.TileGrid) player.Player {
     cells := tiles.GetWinningTiles()
     if cells[0] != nil {
         for _, cell := range cells {
@@ -99,31 +99,10 @@ func (g *game) GetWinnerFromGrid(tiles grid.TileGrid) player.Player {
     return nil
 }
 
-func (g *game) GetWinningPos(tiles grid.TileGrid) Position {
-    var winningTilePosition Position
-    for col, columns := range tiles {
-        for row := range columns {
-            gridTempo := tiles.Clone()
-            if gridTempo[row][col].Value == EMPTY {
-                gridTempo[row][col].Value = X
-                if g.GetWinnerFromGrid(gridTempo) == g.playerX {
-                    winningTilePosition = gridTempo[row][col].Position
-                    fmt.Println(winningTilePosition)
-                }
-            }
-            gridTempo = nil
-        }
-    }
-    
-    return winningTilePosition
-}
-
 func (g *game) NextTurn(pos Position) Game {
-    if pos == INVALID {
-        return g
-    }
+    if pos == INVALID { return g }
     fmt.Printf("-------------------------- NEW TURN --------------------------\n")
-    g.GetWinnerFromGrid(g.board.CurrentGrid())
+    g.CheckWinnerInGrid(g.board.CurrentGrid())
     g.playerX.SetCurrent(!g.playerX.IsCurrent())
     g.playerO.SetCurrent(!g.playerO.IsCurrent())
     g.ai.PrepareNextTurn(pos)
@@ -155,71 +134,4 @@ func (g *game) GetCurrentPlayer() player.Player {
         cur = g.playerX
     }
     return cur
-}
-
-// ///////////////////////////////////////////////////////////////// AI
-
-func (g *game) PlayAINextMove() {
-    var posibility = g.GetPosibility()
-    var choice = g.GetNextMove(posibility)
-    g.GetBoard().CurrentGrid().At(choice).Value = X
-}
-
-func (g *game) GetPosibility() []Position {
-    var posibility []Position
-    x, y := g.GetBoard().GetCurrentPos().GetXY()
-    for i := 0; i < 3; i++ {
-        for j := 0; j < 3; j++ {
-            if g.GetBoard().CurrentGrid()[i+x][j+y].Value == EMPTY {
-                posibility = append(posibility, PositionAt(i+x, j+y))
-            }
-        }
-    }
-    
-    return posibility
-}
-
-func (g *game) GetNextMove(choices []Position) Position {
-    choice := g.GetWinningPos(g.GetBoard().CurrentGrid())
-    
-    // s'il peut gagner, il effectue directement le choix de gagner
-    if choice == INVALID {
-        choicesSorted := g.SortChoices(choices, 0)
-        fmt.Println(choicesSorted)
-        choice = choicesSorted[0]
-    }
-    
-    return choice
-}
-
-func (g *game) SortChoices(choices []Position, number int) []Position {
-    if len(choices) > number {
-        if g.isGridWithO(choices[number]) {
-            choices = remove(choices, number)
-        }
-        return g.SortChoices(choices, number+1)
-    } else {
-        return choices
-    }
-}
-
-func remove(slice []Position, i int) []Position {
-    copy(slice[i:], slice[i+1:])
-    return slice[:len(slice)-1]
-}
-
-func (g *game) isGridWithO(pos Position) bool {
-    tempCurrentPos := g.board.GetCurrentPos()
-    g.board.SetCurrentPos(pos)
-    
-    for _, col := range g.board.CurrentGrid() {
-        for _, tile := range col {
-            if tile.Value == O {
-                g.board.SetCurrentPos(tempCurrentPos)
-                return true
-            }
-        }
-    }
-    g.board.SetCurrentPos(tempCurrentPos)
-    return false
 }
