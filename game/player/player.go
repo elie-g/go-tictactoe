@@ -1,36 +1,52 @@
 package player
 
 type Player interface {
-	GetName() string
-	SetName(name string) Player
-
-	IsCurrent() bool
-	SetCurrent(current bool) Player
+    GetName() string
+    SetName(name string)
+    
+    IsCurrent() bool
+    SetCurrent(current bool)
+    
+    GetPoints() int
+    SetPoints(points int)
+    IncrementPoints() int
 }
 
 type player struct {
-	name    string
-	current bool
+    name    string
+    current bool
+    points  int
 }
 
 func (p *player) IsCurrent() bool {
-	return p.current
+    return p.current
 }
 
-func (p *player) SetCurrent(current bool) Player {
-	p.current = current
-	return p
+func (p *player) SetCurrent(current bool) {
+    p.current = current
 }
 
 func (p *player) GetName() string {
-	return p.name
+    return p.name
 }
 
-func (p *player) SetName(name string) Player {
-	p.name = name
-	return p
+func (p *player) SetName(name string) {
+    p.name = name
+}
+
+func (p *player) GetPoints() int {
+    return p.points
+}
+
+func (p *player) SetPoints(points int) {
+    p.points = points
+}
+
+func (p *player) IncrementPoints() int {
+    p.points++
+    return p.points
 }
 
 func NewPlayer(name string) Player {
-	return &player{name, false}
+    return &player{name, false, 0}
 }

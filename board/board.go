@@ -1,33 +1,43 @@
 package board
 
 import (
+    . "github.com/DrunkenPoney/go-tictactoe/board/bgrid"
     "github.com/DrunkenPoney/go-tictactoe/board/ui"
     . "github.com/DrunkenPoney/go-tictactoe/grid"
-    "github.com/DrunkenPoney/go-tictactoe/position"
+    . "github.com/DrunkenPoney/go-tictactoe/position"
 )
 
-func (g *board) Grids() map[position.Position]TileGrid {
-    return g.grids
+func (b *board) Grids() BoardGrid {
+    return b.grids
 }
 
-func (g *board) CurrentGrid() TileGrid {
-    return g.grids[g.pos]
+func (b *board) GridAt(pos Position) TileGrid {
+    return b.grids.Get(pos)
 }
 
-func (g *board) GetCurrentPos() position.Position {
-    return g.pos
+func (b *board) CurrentGrid() TileGrid {
+    return b.grids.Get(b.pos)
 }
 
-func (g *board) SetCurrentPos(pos position.Position) {
-    g.pos = pos
+func (b *board) GetCurrentPos() Position {
+    return b.pos
 }
 
-func (g *board) ResetAll() {
-    for _, grid := range g.grids {
+func (b *board) SetCurrentPos(pos Position) {
+    b.prevPos = b.pos
+    b.pos = pos
+}
+
+func (b *board) GetPreviousPos() Position {
+    return b.prevPos
+}
+
+func (b *board) ResetAll() {
+    for _, grid := range b.grids {
         grid.Reset()
     }
 }
 
-func (g *board) UI() *ui.BoardUI {
-    return g.bui
+func (b *board) UI() *ui.BoardUI {
+    return b.bui
 }
