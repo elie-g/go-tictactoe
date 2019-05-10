@@ -4,7 +4,8 @@ import (
     "github.com/DrunkenPoney/go-tictactoe/ai"
     "github.com/DrunkenPoney/go-tictactoe/board"
     "github.com/DrunkenPoney/go-tictactoe/events"
-    "github.com/DrunkenPoney/go-tictactoe/game/player"
+    . "github.com/DrunkenPoney/go-tictactoe/game/player"
+    . "github.com/DrunkenPoney/go-tictactoe/game/state"
     "github.com/DrunkenPoney/go-tictactoe/grid"
     . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     . "github.com/DrunkenPoney/go-tictactoe/position"
@@ -13,18 +14,22 @@ import (
 )
 
 type Game interface {
-    GetPlayerO() player.Player
-    GetPlayerX() player.Player
+    GetPlayerO() Player
+    GetPlayerX() Player
     NextTurn(pos Position) Game
     GetBoard() board.Board
     GetAIProcess() ai.AIProcess
-    CheckWinnerInGrid(tiles grid.TileGrid) player.Player
-    GetCurrentPlayer() player.Player
+    CheckWinnerInGrid(tiles grid.TileGrid) Player
+    GetCurrentPlayer() Player
+    
+    Resume() // TODO
+    Pause() // TODO
     Reset() Game
+    
     Draw(screen *ebiten.Image) Game
 }
 
-func NewGame(playerO player.Player, playerX player.Player, board board.Board) Game {
+func NewGame(playerO Player, playerX Player, board board.Board) Game {
     if !playerO.IsCurrent() && !playerX.IsCurrent() ||
         playerO.IsCurrent() && playerX.IsCurrent() {
         rdm := rand.Float64() >= 0.5
@@ -38,18 +43,19 @@ func NewGame(playerO player.Player, playerX player.Player, board board.Board) Ga
         aiProcess = ai.NewAIProcess(X, board.Grids())
     }
     listener := events.NewClickListener()
-    g := &game{playerO, playerX, aiProcess, board, listener}
+    g := &game{playerO, playerX, aiProcess, board, listener, make(chan State)}
     listener.Listen(g.onClick)
     listener.Resume()
     return g
 }
 
 type game struct {
-    playerO       player.Player
-    playerX       player.Player
+    playerO       Player
+    playerX       Player
     ai            ai.AIProcess
     board         board.Board
     clickListener events.ClickListener
+    stateChan     chan State
 }
 
 func (g *game) Reset() Game {
@@ -60,4 +66,12 @@ func (g *game) Reset() Game {
 func (g *game) Draw(screen *ebiten.Image) Game {
     g.GetBoard().DrawBoard(screen)
     return g
+}
+
+func (g *game) Pause() {
+    // TODO
+}
+
+func (g *game) Resume() {
+    // TODO
 }

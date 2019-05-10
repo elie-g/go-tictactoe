@@ -4,18 +4,18 @@ import (
     "fmt"
     . "github.com/DrunkenPoney/go-tictactoe/game/player"
     "github.com/DrunkenPoney/go-tictactoe/grid"
-    "github.com/DrunkenPoney/go-tictactoe/grid/tile"
+    . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     . "github.com/DrunkenPoney/go-tictactoe/position"
 )
 
 // Private
 func (g *game) onClick() {
     t, pos := g.board.GetTileUnderCursor()
-    if t != nil && t.Value == tile.EMPTY {
+    if t != nil && t.Value == EMPTY {
         if g.playerO.IsCurrent() {
-            t.Value = tile.O
+            t.Value = O
         } else {
-            t.Value = tile.X
+            t.Value = X
         }
         g.GetBoard().DrawTile(t, pos)
         g.NextTurn(t.Position)
@@ -29,7 +29,7 @@ func (g *game) CheckWinnerInGrid(tiles grid.TileGrid) Player {
             cell.Winning = true
         }
         
-        if cells[0].Value == tile.X {
+        if cells[0].Value == X {
             return g.playerX
         } else {
             return g.playerO
@@ -48,9 +48,9 @@ func (g *game) NextTurn(pos Position) Game {
     g.GetBoard().SetCurrentPos(pos)
     
     if g.playerX.IsCurrent() {
-        bestPos := g.ai.BestMoveFor(tile.X)
+        bestPos := g.ai.BestMoveFor(X)
         tile := g.GetBoard().CurrentGrid().At(bestPos)
-        tile.Value = tile.X
+        tile.Value = X
         g.GetBoard().DrawTile(tile, g.GetBoard().GetCurrentPos())
         g.NextTurn(bestPos)
     }
