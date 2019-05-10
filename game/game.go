@@ -22,8 +22,10 @@ type Game interface {
     CheckWinnerInGrid(tiles grid.TileGrid) Player
     GetCurrentPlayer() Player
     
+    StateChannel() chan State
+    
     Resume() // TODO
-    Pause() // TODO
+    Pause()  // TODO
     Reset() Game
     
     Draw(screen *ebiten.Image) Game
@@ -46,6 +48,11 @@ func NewGame(playerO Player, playerX Player, board board.Board) Game {
     g := &game{playerO, playerX, aiProcess, board, listener, make(chan State)}
     listener.Listen(g.onClick)
     listener.Resume()
+    go func() {
+        for {
+            <-g.stateChan
+        }
+    }()
     return g
 }
 
@@ -56,6 +63,7 @@ type game struct {
     board         board.Board
     clickListener events.ClickListener
     stateChan     chan State
+    state         State
 }
 
 func (g *game) Reset() Game {
@@ -68,10 +76,22 @@ func (g *game) Draw(screen *ebiten.Image) Game {
     return g
 }
 
+func (g *game) StateChannel() chan State {
+    return g.stateChan
+}
+
 func (g *game) Pause() {
-    // TODO
+    if g.state != PAUSED && g.state != STOPPED {
+        // TODO Pause the game
+        g.state = PAUSED
+        g.stateChan <- PAUSED
+    }
 }
 
 func (g *game) Resume() {
-    // TODO
+    if g.state != RUNNING && g.state != STOPPED {
+        // TODO Resume the game
+        g.state = RUNNING
+        g.stateChan <- RUNNING
+    }
 }

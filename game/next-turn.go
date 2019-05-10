@@ -8,20 +8,6 @@ import (
     . "github.com/DrunkenPoney/go-tictactoe/position"
 )
 
-// Private
-func (g *game) onClick() {
-    t, pos := g.board.GetTileUnderCursor()
-    if t != nil && t.Value == EMPTY {
-        if g.playerO.IsCurrent() {
-            t.Value = O
-        } else {
-            t.Value = X
-        }
-        g.GetBoard().DrawTile(t, pos)
-        g.NextTurn(t.Position)
-    }
-}
-
 func (g *game) CheckWinnerInGrid(tiles grid.TileGrid) Player {
     cells := tiles.GetWinningTiles()
     if cells[0] != nil {
