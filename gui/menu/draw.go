@@ -42,15 +42,19 @@ func (m *menu) Draw(screen *ebiten.Image) {
         img, _ := ebiten.NewImage(int(wMenu), int(hMenu), ebiten.FilterDefault)
         _ = img.Fill(Colors().MenuBackground())
         
+        //////////////////////////////////////////////////////////////// BTN_RESUME
         btnType := BTN_RESUME
         clr := Colors().MenuButtonBackground()
         txtClr := Colors().MenuButtonColor()
-        btnX, btnY := (wMenu-btnWidth)/2, hMenu/5
+        btnX, btnY := (wMenu-btnWidth)/2, hMenu/7
         if cX > menuX+btnX && cY > menuY+btnY &&
             cX < menuX+btnX+btnWidth && cY < menuY+btnY+btnHeight {
             btnType |= BTN_HOVER
             clr = Colors().MenuButtonHoverBackground()
             txtClr = Colors().InGameTextColor()
+            if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) && m.resumeCb != nil {
+                m.resumeCb()
+            }
         }
         
         if btnImgs[btnType] == nil {
@@ -65,6 +69,34 @@ func (m *menu) Draw(screen *ebiten.Image) {
         opts.GeoM.Translate(btnX, btnY)
         _ = img.DrawImage(btnImgs[btnType], opts)
         
+        // ////////////////////////////////////////////////////////// BTN_EXIT
+        btnType = BTN_EXIT
+        clr = Colors().MenuButtonBackground()
+        txtClr = Colors().MenuButtonColor()
+        btnY = btnY * 3
+        if cX > menuX+btnX && cY > menuY+btnY &&
+            cX < menuX+btnX+btnWidth && cY < menuY+btnY+btnHeight {
+            btnType |= BTN_HOVER
+            clr = Colors().MenuButtonHoverBackground()
+            txtClr = Colors().InGameTextColor()
+            if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) && m.exitCb != nil {
+                m.exitCb()
+            }
+        }
+        
+        if btnImgs[btnType] == nil {
+            btnImgs[btnType], _ = ebiten.NewImage(int(btnWidth), int(btnHeight), ebiten.FilterDefault)
+            _ = btnImgs[btnType].Fill(clr)
+            x := (btnWidth / 2) - (fntSize * float64(len(MSG_EXIT_GAME.Str())) / 2)
+            y := (btnHeight-fntSize)/2 + btnHeight/2
+            text.Draw(btnImgs[btnType], MSG_EXIT_GAME.Str(), font, int(x), int(y), txtClr)
+        }
+        
+        opts = &ebiten.DrawImageOptions{}
+        opts.GeoM.Translate(btnX, btnY)
+        _ = img.DrawImage(btnImgs[btnType], opts)
+        
+        ////////////////////////////////////////////////////////////////////////////////////
         opts.GeoM.Reset()
         opts.GeoM.Translate(menuX, menuY)
         _ = menuImg.DrawImage(img, opts)
