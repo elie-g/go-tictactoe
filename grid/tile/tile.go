@@ -17,6 +17,7 @@ type Tile struct {
     Active   bool
     Winning  bool
     Position position.Position
+    Enabled  bool
 }
 
 func (t *Tile) Clone() *Tile {
@@ -25,6 +26,7 @@ func (t *Tile) Clone() *Tile {
         Active:   t.Active,
         Winning:  t.Winning,
         Position: t.Position,
+        Enabled:  t.Enabled,
     }
 }
 
@@ -34,7 +36,8 @@ func (t *Tile) Equals(c *Tile) bool {
             t.Position == c.Position &&
             t.Value == c.Value &&
             t.Winning == c.Winning &&
-            t.Active == c.Active)
+            t.Active == c.Active &&
+            t.Enabled == c.Enabled)
 }
 
 func (tt TileType) Opponent() TileType {

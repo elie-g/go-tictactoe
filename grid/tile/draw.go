@@ -13,6 +13,7 @@ const (
     _O_       uint8 = 0x02 // 0000 0010
     _ACTIVE_  uint8 = 0x04 // 0000 0100
     _WINNING_ uint8 = 0x10 // 0000 1000
+    _ENABLED_ uint8 = 0x20 // 0001 0000
 )
 
 //noinspection GoSnakeCaseUsage
@@ -38,6 +39,9 @@ func (t *Tile) GetImage() *ebiten.Image {
     if t.Winning {
         id |= _WINNING_
     }
+    if t.Enabled {
+        id |= _ENABLED_
+    }
     
     
     // Si la tile a changé
@@ -55,15 +59,19 @@ func (t *Tile) GetImage() *ebiten.Image {
             c = color.RGBA{R: 0x00, G: 0xFF, B: 0x00, A: 0xFF}
             stroke = color.RGBA{R: 0x00, G: 0x33, B: 0x00, A: 0xEE}
         } else if t.Active {
-            c = color.RGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xFF}
+            c = color.RGBA{R: 0xEE, G: 0xEE, B: 0xEE, A: 0xFF}
             stroke = color.Black
         } else if t.Winning {
             c = color.RGBA{R: 0x00, G: 0x44, B: 0x00, A: 0x99}
             stroke = color.RGBA{R: 0x66, G: 0xFF, B: 0x33, A: 0x99}
-        } else {
+        } else if t.Enabled {
             c = color.Black
             stroke = color.White
+        } else {
+            c = color.RGBA{R: 0x44, G: 0x44, B: 0x44, A: 0xFF}
+            stroke = color.White
         }
+        
         if c != nil {
             gfx.DrawPolygon(img, rect, 0, c)
         }

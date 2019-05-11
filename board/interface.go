@@ -19,7 +19,6 @@ type Board interface {
 	SetCurrentPos(pos Position)
 	GetPreviousPos() Position
 	GetTileUnderCursor() (*tile.Tile, Position)
-	IsValidTile(tile *tile.Tile) bool
 	ResetAll()
 	UI() *ui.BoardUI
 
@@ -40,11 +39,12 @@ type board struct {
 }
 
 func NewBoard() Board {
-	return &board{
+	b :=  &board{
 		grids:   NewBoardGrid(),
-		pos:     DefaultPosition,
 		prevPos: INVALID,
 		bui:     ui.DefaultBoardUI(),
 		cellImg: make(map[Position]*ebiten.Image),
 	}
+	b.SetCurrentPos(DefaultPosition)
+	return b
 }

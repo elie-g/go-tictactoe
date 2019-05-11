@@ -4,7 +4,6 @@ import (
 	. "github.com/DrunkenPoney/go-tictactoe/board/bgrid"
 	"github.com/DrunkenPoney/go-tictactoe/board/ui"
 	. "github.com/DrunkenPoney/go-tictactoe/grid"
-	"github.com/DrunkenPoney/go-tictactoe/grid/tile"
 	. "github.com/DrunkenPoney/go-tictactoe/position"
 )
 
@@ -25,6 +24,18 @@ func (b *board) GetCurrentPos() Position {
 }
 
 func (b *board) SetCurrentPos(pos Position) {
+	for _, rows := range b.GridAt(b.pos) {
+		for _, cell := range rows {
+			cell.Enabled = false
+		}
+	}
+	for _, rows := range b.GridAt(pos) {
+		for _, cell := range rows {
+			cell.Enabled = true
+		}
+	}
+	b.SetGridToDraw(b.pos)
+	b.SetGridToDraw(pos)
 	b.prevPos = b.pos
 	b.pos = pos
 }
@@ -41,22 +52,4 @@ func (b *board) ResetAll() {
 
 func (b *board) UI() *ui.BoardUI {
 	return b.bui
-}
-
-func (b *board) IsValidTile(tile *tile.Tile) bool {
-	for i := TOP_LEFT; i < (BOTTOM_RIGHT); i++ {
-		for j := TOP_LEFT; j < (BOTTOM_RIGHT); j++ {
-			b.GridAt(i).At(j).Active = false
-		}
-	}
-
-	for i := TOP_LEFT; i < (BOTTOM_RIGHT); i++ {
-		b.CurrentGrid().At(i).Active = true
-		b.DrawTile(b.CurrentGrid().At(i), b.CurrentGrid().At(i).Position)
-
-		if b.CurrentGrid().At(i) == tile {
-			return true
-		}
-	}
-	return false
 }

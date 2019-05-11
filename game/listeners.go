@@ -7,10 +7,9 @@ import (
 
 // Private
 func (g *game) onClick() {
-
 	t, pos := g.board.GetTileUnderCursor()
 	if t != nil {
-		if g.board.IsValidTile(t) && t.Value == EMPTY {
+		if g.GetBoard().GetCurrentPos() == pos && t.Value == EMPTY {
 			if g.playerO.IsCurrent() {
 				t.Value = O
 			} else {
@@ -20,7 +19,6 @@ func (g *game) onClick() {
 			g.NextTurn(t.Position)
 		}
 	}
-
 }
 
 // Private
