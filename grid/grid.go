@@ -41,6 +41,7 @@ func (g TileGrid) Reset() {
 			tile.Active = false
 			tile.Winning = false
 			tile.Value = EMPTY
+			tile.Enabled = false
 		}
 	}
 }

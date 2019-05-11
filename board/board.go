@@ -45,9 +45,11 @@ func (b *board) GetPreviousPos() Position {
 }
 
 func (b *board) ResetAll() {
-	for _, grid := range b.grids {
+	for pos, grid := range b.Grids() {
 		grid.Reset()
+		b.SetGridToDraw(pos)
 	}
+	b.SetCurrentPos(DefaultPosition)
 }
 
 func (b *board) UI() *ui.BoardUI {

@@ -11,6 +11,10 @@ func (l *layout) Update(screen *ebiten.Image) error {
         return nil
     }
     
+    if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+        l.GetGame().OnClick()
+    }
+    
     if l.activeTile != nil {
         l.activeTile.Active = false
         l.GetGame().GetBoard().DrawTile(l.activeTile,l.activePos)

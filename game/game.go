@@ -3,7 +3,6 @@ package game
 import (
     "github.com/DrunkenPoney/go-tictactoe/ai"
     "github.com/DrunkenPoney/go-tictactoe/board"
-    "github.com/DrunkenPoney/go-tictactoe/events"
     . "github.com/DrunkenPoney/go-tictactoe/game/player"
     . "github.com/DrunkenPoney/go-tictactoe/game/state"
     "github.com/DrunkenPoney/go-tictactoe/grid"
@@ -23,10 +22,11 @@ type Game interface {
     GetCurrentPlayer() Player
     
     StateChannel() chan State
-    GetClickListener() events.ClickListener
+    OnClick()
     
-    Resume() // TODO
-    Pause()  // TODO
+    Resume()
+    Pause()
+    IsPaused() bool
     Reset() Game
     
     Draw(screen *ebiten.Image) Game
@@ -45,11 +45,8 @@ func NewGame(playerO Player, playerX Player, board board.Board) Game {
     } else {
         aiProcess = ai.NewAIProcess(X, board.Grids())
     }
-    listener := events.NewClickListener()
-    g := &game{playerO, playerX, aiProcess, board,
-        listener, make(chan State), RUNNING}
-    listener.Listen(g.onClick)
-    listener.Resume()
+    g := &game{playerO, playerX, aiProcess,
+        board, make(chan State), RUNNING}
     go func() {
         for {
             g.onState(<-g.stateChan)
@@ -59,17 +56,23 @@ func NewGame(playerO Player, playerX Player, board board.Board) Game {
 }
 
 type game struct {
-    playerO       Player
-    playerX       Player
-    ai            ai.AIProcess
-    board         board.Board
-    clickListener events.ClickListener
-    stateChan     chan State
-    state         State
+    playerO   Player
+    playerX   Player
+    ai        ai.AIProcess
+    board     board.Board
+    stateChan chan State
+    state     State
 }
 
 func (g *game) Reset() Game {
+    g.Pause()
     g.GetBoard().ResetAll()
+    tile := O
+    if g.GetPlayerX().IsCurrent() {
+        tile = X
+    }
+    g.ai = ai.NewAIProcess(tile, g.GetBoard().Grids())
+    g.Resume()
     return g
 }
 
@@ -96,4 +99,8 @@ func (g *game) Resume() {
         g.state = RUNNING
         g.stateChan <- RUNNING
     }
+}
+
+func (g *game) IsPaused() bool {
+    return g.state == PAUSED || g.state == STOPPED
 }

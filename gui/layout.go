@@ -36,9 +36,9 @@ type layout struct {
 func (l *layout) ToggleMenu() bool {
     l.GetMenu().SetShown(!l.GetMenu().IsShown())
     if l.GetMenu().IsShown() {
-        l.GetGame().GetClickListener().Pause()
+        l.GetGame().Pause()
     } else {
-        l.GetGame().GetClickListener().Resume()
+        l.GetGame().Resume()
     }
     return l.GetMenu().IsShown()
 }

@@ -6,17 +6,19 @@ import (
 )
 
 // Private
-func (g *game) onClick() {
-	t, pos := g.board.GetTileUnderCursor()
-	if t != nil {
-		if g.GetBoard().GetCurrentPos() == pos && t.Value == EMPTY {
-			if g.playerO.IsCurrent() {
-				t.Value = O
-			} else {
-				t.Value = X
+func (g *game) OnClick() {
+	if !g.IsPaused() {
+		t, pos := g.board.GetTileUnderCursor()
+		if t != nil {
+			if g.GetBoard().GetCurrentPos() == pos && t.Value == EMPTY {
+				if g.playerO.IsCurrent() {
+					t.Value = O
+				} else {
+					t.Value = X
+				}
+				g.GetBoard().DrawTile(t, pos)
+				g.NextTurn(t.Position)
 			}
-			g.GetBoard().DrawTile(t, pos)
-			g.NextTurn(t.Position)
 		}
 	}
 }

@@ -29,7 +29,6 @@ type Board interface {
 }
 
 type board struct {
-	initialized bool
 	grids       BoardGrid
 	pos         Position
 	prevPos     Position
