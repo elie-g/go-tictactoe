@@ -4,9 +4,6 @@ import (
     "github.com/hajimehoshi/ebiten"
 )
 
-type ButtonType uint8
-
-
 type Menu interface {
     SetShown(show bool)
     IsShown() bool
