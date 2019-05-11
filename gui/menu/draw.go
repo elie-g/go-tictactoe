@@ -1,10 +1,10 @@
 package menu
 
 import (
-    . "github.com/DrunkenPoney/go-tictactoe/gui/colors"
     . "github.com/DrunkenPoney/go-tictactoe/gui/menu/btn"
-    . "github.com/DrunkenPoney/go-tictactoe/gui/message"
     "github.com/DrunkenPoney/go-tictactoe/internal"
+    "github.com/DrunkenPoney/go-tictactoe/settings/colors"
+    "github.com/DrunkenPoney/go-tictactoe/settings/messages"
     "github.com/golang/freetype/truetype"
     "github.com/hajimehoshi/ebiten"
     "github.com/hajimehoshi/ebiten/examples/resources/fonts"
@@ -27,6 +27,12 @@ func (m *menu) Draw(screen *ebiten.Image) {
         btnWidth, btnHeight := 0.8*wMenu, fntSize*2
         ciX, ciY := ebiten.CursorPosition()
         cX, cY := float64(ciX), float64(ciY)
+        btnX := (wMenu - btnWidth) / 2
+        
+        // Changer ICI pour plus de boutons
+        btnY := hMenu / 5
+        // Plus `i` est ÉLEVÉ plus l'espace entre les boutons est PETITE:
+        // hMenu / `i`
         
         if font == nil {
             tt, _ := truetype.Parse(fonts.ArcadeN_ttf)
@@ -37,67 +43,47 @@ func (m *menu) Draw(screen *ebiten.Image) {
         }
         
         menuImg, _ = ebiten.NewImage(wi, hi, ebiten.FilterDefault)
-        _ = menuImg.Fill(Colors().MenuFadeBackground())
+        _ = menuImg.Fill(colors.Colors().MenuFadeBackground())
         
         img, _ := ebiten.NewImage(int(wMenu), int(hMenu), ebiten.FilterDefault)
-        _ = img.Fill(Colors().MenuBackground())
+        _ = img.Fill(colors.Colors().MenuBackground())
         
-        //////////////////////////////////////////////////////////////// BTN_RESUME
-        btnType := BTN_RESUME
-        clr := Colors().MenuButtonBackground()
-        txtClr := Colors().MenuButtonColor()
-        btnX, btnY := (wMenu-btnWidth)/2, hMenu/7
-        if cX > menuX+btnX && cY > menuY+btnY &&
-            cX < menuX+btnX+btnWidth && cY < menuY+btnY+btnHeight {
-            btnType |= BTN_HOVER
-            clr = Colors().MenuButtonHoverBackground()
-            txtClr = Colors().InGameTextColor()
-            if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) && m.resumeCb != nil {
-                m.resumeCb()
+        var printBtn = func(btnType ButtonType, order int, btnText messages.Message) {
+            clr := colors.Colors().MenuButtonBackground()
+            txtClr := colors.Colors().MenuButtonColor()
+            btn2Y := btnY*float64(order) - (btnHeight / 2)
+            action := m.actions[btnType]
+            if !m.IsFrozen() && cX > menuX+btnX && cY > menuY+btn2Y &&
+                cX < menuX+btnX+btnWidth && cY < menuY+btn2Y+btnHeight {
+                btnType |= BTN_HOVER
+                clr = colors.Colors().MenuButtonHoverBackground()
+                txtClr = colors.Colors().InGameTextColor()
+                if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) && action != nil {
+                    action()
+                }
             }
+            
+            if btnImgs[btnType] == nil {
+                btnImgs[btnType], _ = ebiten.NewImage(int(btnWidth), int(btnHeight), ebiten.FilterDefault)
+                _ = btnImgs[btnType].Fill(clr)
+                x := (btnWidth / 2) - (fntSize * float64(len(btnText.Str())) / 2)
+                y := (btnHeight-fntSize)/2 + btnHeight/2
+                text.Draw(btnImgs[btnType], btnText.Str(), font, int(x), int(y), txtClr)
+            }
+            
+            opts := &ebiten.DrawImageOptions{}
+            opts.GeoM.Translate(btnX, btn2Y)
+            _ = img.DrawImage(btnImgs[btnType], opts)
         }
         
-        if btnImgs[btnType] == nil {
-            btnImgs[btnType], _ = ebiten.NewImage(int(btnWidth), int(btnHeight), ebiten.FilterDefault)
-            _ = btnImgs[btnType].Fill(clr)
-            x := (btnWidth / 2) - (fntSize * float64(len(MSG_RESUME_GAME.Str())) / 2)
-            y := (btnHeight-fntSize)/2 + btnHeight/2
-            text.Draw(btnImgs[btnType], MSG_RESUME_GAME.Str(), font, int(x), int(y), txtClr)
-        }
+        // AJOUTER LES BOUTONS ICI
+        printBtn(BTN_RESUME, 1, messages.MSG_BTN_RESUME_GAME)
+        printBtn(BTN_PLAYER_1, 2, messages.MSG_BTN_PLAYER_1)
+        printBtn(BTN_PLAYER_2, 3, messages.MSG_BTN_PLAYER_2)
+        printBtn(BTN_EXIT, 4, messages.MSG_BTN_EXIT_GAME)
         
+        // //////////////////////////////////////////////////////////////////////////////////
         opts := &ebiten.DrawImageOptions{}
-        opts.GeoM.Translate(btnX, btnY)
-        _ = img.DrawImage(btnImgs[btnType], opts)
-        
-        // ////////////////////////////////////////////////////////// BTN_EXIT
-        btnType = BTN_EXIT
-        clr = Colors().MenuButtonBackground()
-        txtClr = Colors().MenuButtonColor()
-        btnY = btnY * 3
-        if cX > menuX+btnX && cY > menuY+btnY &&
-            cX < menuX+btnX+btnWidth && cY < menuY+btnY+btnHeight {
-            btnType |= BTN_HOVER
-            clr = Colors().MenuButtonHoverBackground()
-            txtClr = Colors().InGameTextColor()
-            if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) && m.exitCb != nil {
-                m.exitCb()
-            }
-        }
-        
-        if btnImgs[btnType] == nil {
-            btnImgs[btnType], _ = ebiten.NewImage(int(btnWidth), int(btnHeight), ebiten.FilterDefault)
-            _ = btnImgs[btnType].Fill(clr)
-            x := (btnWidth / 2) - (fntSize * float64(len(MSG_EXIT_GAME.Str())) / 2)
-            y := (btnHeight-fntSize)/2 + btnHeight/2
-            text.Draw(btnImgs[btnType], MSG_EXIT_GAME.Str(), font, int(x), int(y), txtClr)
-        }
-        
-        opts = &ebiten.DrawImageOptions{}
-        opts.GeoM.Translate(btnX, btnY)
-        _ = img.DrawImage(btnImgs[btnType], opts)
-        
-        ////////////////////////////////////////////////////////////////////////////////////
-        opts.GeoM.Reset()
         opts.GeoM.Translate(menuX, menuY)
         _ = menuImg.DrawImage(img, opts)
         

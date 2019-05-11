@@ -3,11 +3,11 @@ package layer
 import (
     "fmt"
     . "github.com/DrunkenPoney/go-tictactoe/ai/path"
-    "github.com/DrunkenPoney/go-tictactoe/ai/settings"
     . "github.com/DrunkenPoney/go-tictactoe/board/bgrid"
     . "github.com/DrunkenPoney/go-tictactoe/grid"
     . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     . "github.com/DrunkenPoney/go-tictactoe/position"
+    "github.com/DrunkenPoney/go-tictactoe/settings"
 )
 
 type PredictionLayer interface {
@@ -90,9 +90,9 @@ func (l *layer) GetScore() float64 {
     score := 0.0
     winning := l.Grid().GetWinningTiles()
     if winning[0] != nil {
-        score = 1
+        score = 10
         if winning[0].Value != settings.REFERENCE_PLAYER {
-            score = -1
+            score = -10
         }
     }
     return score

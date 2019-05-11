@@ -12,8 +12,7 @@ import (
 
 type Layout interface {
     Update(screen *ebiten.Image) error
-    ToggleMenu() bool // TODO
-    ShowMessage()     // TODO
+    ToggleMenu() bool
     GetGame() Game // TODO Add possibility to pause, resume and restart the game
     GetMenu() Menu
     Draw(screen *ebiten.Image)
@@ -22,15 +21,16 @@ type Layout interface {
 func NewLayout(playerO string, playerX string) Layout {
     layout := &layout{
         game: NewGame(NewPlayer(playerO), NewPlayer(playerX), board.NewBoard()),
-        menu: NewMenu()} // TODO add menu
+        menu: NewMenu()}
+    layout.initListeners()
     return layout
 }
 
 type layout struct {
-    activeTile *tile.Tile
-    activePos  Position
-    game       Game
-    menu       Menu
+    activeTile      *tile.Tile
+    activePos       Position
+    game            Game
+    menu            Menu
 }
 
 func (l *layout) ToggleMenu() bool {
@@ -41,10 +41,6 @@ func (l *layout) ToggleMenu() bool {
         l.GetGame().Resume()
     }
     return l.GetMenu().IsShown()
-}
-
-func (l *layout) ShowMessage() {
-    panic("implement me")
 }
 
 func (l *layout) GetGame() Game {

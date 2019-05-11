@@ -5,8 +5,8 @@ import (
     . "github.com/DrunkenPoney/go-tictactoe/game/player"
     "github.com/DrunkenPoney/go-tictactoe/grid"
     . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
-    . "github.com/DrunkenPoney/go-tictactoe/gui/message"
     . "github.com/DrunkenPoney/go-tictactoe/position"
+    . "github.com/DrunkenPoney/go-tictactoe/settings/messages"
     "github.com/sqweek/dialog"
     "os"
 )

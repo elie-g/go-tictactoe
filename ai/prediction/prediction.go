@@ -1,12 +1,13 @@
 package prediction
 
 import (
+    "fmt"
     . "github.com/DrunkenPoney/go-tictactoe/ai/prediction/layer"
-    "github.com/DrunkenPoney/go-tictactoe/ai/settings"
     . "github.com/DrunkenPoney/go-tictactoe/board"
     "github.com/DrunkenPoney/go-tictactoe/board/bgrid"
     "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     . "github.com/DrunkenPoney/go-tictactoe/position"
+    "github.com/DrunkenPoney/go-tictactoe/settings"
     "sync"
 )
 
@@ -24,13 +25,13 @@ func NewPrediction(player tile.TileType, board bgrid.BoardGrid) Prediction {
     return &prediction{
         layer:    NewLayer(DefaultPosition, player, board),
         maxDepth: settings.DEFAULT_PREDICTION_DEPTH,
-        mut: &mut}
+        mut:      &mut}
 }
 
 type prediction struct {
     layer    PredictionLayer
     maxDepth int
-    mut *sync.Mutex
+    mut      *sync.Mutex
 }
 
 func (pred *prediction) CurrentLayer() PredictionLayer {
@@ -59,7 +60,7 @@ func (pred *prediction) Predict() map[Position]float64 {
         wg.Add(1)
         go func(pos Position, layer PredictionLayer, wg *sync.WaitGroup, mut *sync.Mutex) {
             defer wg.Done()
-            res := layer.GetScore() + pred.calcLayer(layer)
+            res := (layer.GetScore() * 3) + pred.calcLayer(layer)
             mut.Lock()
             predictions[pos] = res
             mut.Unlock()
@@ -67,6 +68,12 @@ func (pred *prediction) Predict() map[Position]float64 {
     }
     wg.Wait()
     pred.mut.Unlock()
+    str := "Prediction: "
+    for pos, score := range predictions {
+        x, y := pos.GetXY()
+        str += fmt.Sprintf("\n\t> Pos %d (%d,%d) => %f", pos, x, y, score)
+    }
+    fmt.Println(str)
     return predictions
 }
 
@@ -81,7 +88,7 @@ func (pred *prediction) calcLayer(layer PredictionLayer) float64 {
             count++
             go func(subLayer PredictionLayer, wg *sync.WaitGroup, mut *sync.Mutex) {
                 defer wg.Done()
-                scr := subLayer.GetScore() + pred.calcLayer(subLayer)
+                scr := (subLayer.GetScore() * 3) + pred.calcLayer(subLayer)
                 mut.Lock()
                 score += scr
                 mut.Unlock()

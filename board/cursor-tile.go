@@ -19,7 +19,7 @@ func (b *board) GetTileUnderCursor() (*Tile, Position) {
             pos := PositionAt(int(cX/w), int(cY/h))
             
             x, y := int(Mod(cX, w)/(w/3)), int(Mod(cY, h)/(h/3))
-            if subPos := PositionAt(x, y); subPos != INVALID {
+            if subPos := PositionAt(x, y); subPos != INVALID && pos != INVALID {
                 return b.grids[pos].At(subPos), pos
             }
         }
