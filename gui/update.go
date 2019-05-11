@@ -16,9 +16,11 @@ func (l *layout) Update(screen *ebiten.Image) error {
         l.GetGame().GetBoard().DrawTile(l.activeTile,l.activePos)
     }
     
-    if l.activeTile, l.activePos = l.GetGame().GetBoard().GetTileUnderCursor(); l.activeTile != nil {
-        l.activeTile.Active = true
-        l.GetGame().GetBoard().DrawTile(l.activeTile, l.activePos)
+    if !l.GetMenu().IsShown() {
+        if l.activeTile, l.activePos = l.GetGame().GetBoard().GetTileUnderCursor(); l.activeTile != nil {
+            l.activeTile.Active = true
+            l.GetGame().GetBoard().DrawTile(l.activeTile, l.activePos)
+        }
     }
     
     l.Draw(screen)

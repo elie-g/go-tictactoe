@@ -13,6 +13,7 @@ var font f.Face
 var fntSize = internal.Scale(12)
 
 func (l *layout) Draw(screen *ebiten.Image) {
+    l.checkKeypress()
     w, h := screen.Size()
     
     if layoutImg == nil {
@@ -29,5 +30,6 @@ func (l *layout) Draw(screen *ebiten.Image) {
     
     l.GetGame().Draw(layoutImg)
     DrawGameStats(l.GetGame().GetPlayerO(), l.GetGame().GetPlayerX())
+    l.GetMenu().Draw(layoutImg)
     _ = screen.DrawImage(layoutImg, &ebiten.DrawImageOptions{})
 }

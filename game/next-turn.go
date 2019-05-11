@@ -5,6 +5,7 @@ import (
 	. "github.com/DrunkenPoney/go-tictactoe/game/player"
 	"github.com/DrunkenPoney/go-tictactoe/grid"
 	. "github.com/DrunkenPoney/go-tictactoe/grid/tile"
+	. "github.com/DrunkenPoney/go-tictactoe/gui/message"
 	. "github.com/DrunkenPoney/go-tictactoe/position"
 	"github.com/sqweek/dialog"
 )
@@ -46,7 +47,7 @@ func (g *game) NextTurn(pos Position) Game {
 		}
 	} else {
 		winner.IncrementPoints()
-		ok := dialog.Message("%s", "Do you want to continue?").Title("Are you sure?").YesNo()
+		ok := dialog.Message(MSG_NEW_GAME.Str()).Title(MSG_NEW_GAME.Str()).YesNo()
 		if ok {
 			g.Reset()
 		}

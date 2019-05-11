@@ -12,17 +12,18 @@ import (
 
 type Layout interface {
     Update(screen *ebiten.Image) error
-    ToggleMenu(show bool) // TODO
-    ShowMessage()         // TODO
-    GetGame() Game
-    NewGame() // TODO Add possibility to pause, resume, stop and restart the game
+    ToggleMenu() bool // TODO
+    ShowMessage()     // TODO
+    GetGame() Game // TODO Add possibility to pause, resume and restart the game
+    GetMenu() Menu
     Draw(screen *ebiten.Image)
 }
 
 func NewLayout(playerO string, playerX string) Layout {
-    return &layout{
+    layout := &layout{
         game: NewGame(NewPlayer(playerO), NewPlayer(playerX), board.NewBoard()),
-        menu: nil} // TODO add menu
+        menu: NewMenu()} // TODO add menu
+    return layout
 }
 
 type layout struct {
@@ -32,8 +33,14 @@ type layout struct {
     menu       Menu
 }
 
-func (l *layout) ToggleMenu(show bool) {
-    panic("implement me")
+func (l *layout) ToggleMenu() bool {
+    l.GetMenu().SetShown(!l.GetMenu().IsShown())
+    if l.GetMenu().IsShown() {
+        l.GetGame().GetClickListener().Pause()
+    } else {
+        l.GetGame().GetClickListener().Resume()
+    }
+    return l.GetMenu().IsShown()
 }
 
 func (l *layout) ShowMessage() {
@@ -44,8 +51,6 @@ func (l *layout) GetGame() Game {
     return l.game
 }
 
-func (l *layout) NewGame() {
-    panic("implement me")
+func (l *layout) GetMenu() Menu {
+    return l.menu
 }
-
-
