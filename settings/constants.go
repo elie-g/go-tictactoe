@@ -7,5 +7,5 @@ import (
 //noinspection GoUnusedConst,GoSnakeCaseUsage
 const (
     REFERENCE_PLAYER = tile.X
-    DEFAULT_PREDICTION_DEPTH = 6
+    DEFAULT_PREDICTION_DEPTH = 5
 )
