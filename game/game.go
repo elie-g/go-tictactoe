@@ -73,6 +73,7 @@ func (g *game) Reset() Game {
         tile = X
     }
     g.ai = nil
+    // Le jeu freeze si on ne force pas le garbage collection
     runtime.GC()
     g.ai = ai.NewAIProcess(tile, g.GetBoard().Grids())
     g.Resume()
