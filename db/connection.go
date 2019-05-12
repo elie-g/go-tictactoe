@@ -17,6 +17,7 @@ type Database interface {
     FindGame(id int64, force bool) DBGame
     FindPlayer(id int64, force bool) DBPlayer
     FindTurn(id int64, force bool) DBTurn
+    LastCreatedGame() DBGame
     ClearMemory()
     DB() *sql.DB
 }
