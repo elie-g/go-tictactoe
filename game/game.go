@@ -10,6 +10,7 @@ import (
     . "github.com/DrunkenPoney/go-tictactoe/position"
     "github.com/hajimehoshi/ebiten"
     "math/rand"
+    "runtime"
 )
 
 type Game interface {
@@ -71,6 +72,8 @@ func (g *game) Reset() Game {
     if g.GetPlayerX().IsCurrent() {
         tile = X
     }
+    g.ai = nil
+    runtime.GC()
     g.ai = ai.NewAIProcess(tile, g.GetBoard().Grids())
     g.Resume()
     return g
@@ -87,7 +90,6 @@ func (g *game) StateChannel() chan State {
 
 func (g *game) Pause() {
     if g.state != PAUSED && g.state != STOPPED {
-        // TODO Pause the game
         g.state = PAUSED
         g.stateChan <- PAUSED
     }
@@ -95,7 +97,6 @@ func (g *game) Pause() {
 
 func (g *game) Resume() {
     if g.state != RUNNING && g.state != STOPPED {
-        // TODO Resume the game
         g.state = RUNNING
         g.stateChan <- RUNNING
     }
