@@ -3,6 +3,7 @@ package db
 import (
     . "github.com/DrunkenPoney/go-tictactoe/internal"
     "strconv"
+    "time"
 )
 
 func (d *database) FindGame(id int64, force bool) DBGame {
@@ -32,7 +33,13 @@ func (d *database) FindGame(id int64, force bool) DBGame {
         id, err = strconv.ParseInt(cols[3], 10, 64)
         CheckError(err)
         game.player2 = &dbPlayer{id: id}
+        
+        t, err := strconv.ParseInt(cols[4], 10, 64)
+        CheckError(err)
+        game.date = time.Unix(t, 0)
+        
         game.fetched = true
+        game.db = d
         d.games[id] = game
     }
     return game
@@ -55,6 +62,7 @@ func (d *database) FindPlayer(id int64, force bool) DBPlayer {
         CheckError(err)
         player.name = cols[1]
         player.fetched = true
+        player.db = d
         d.players[id] = player
     }
     return player
@@ -69,7 +77,7 @@ func (d *database) FindTurn(id int64, force bool) DBTurn {
     CheckError(err)
     defer rows.Close()
     if rows.Next() {
-        turn  = &dbTurn{}
+        turn = &dbTurn{}
         cols, err := rows.Columns()
         CheckError(err)
         
@@ -95,6 +103,7 @@ func (d *database) FindTurn(id int64, force bool) DBTurn {
         turn.gridPos, err = strconv.Atoi(cols[0])
         CheckError(err)
         turn.fetched = true
+        turn.db = d
         d.turns[id] = turn
     }
     return turn

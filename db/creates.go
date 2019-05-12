@@ -11,7 +11,7 @@ func (d *database) CreateGame(player1 DBPlayer) DBGame {
     CheckError(err)
     id, err := res.LastInsertId()
     CheckError(err)
-    return &dbGame{id: id}
+    return &dbGame{id: id, db: d}
 }
 
 func (d *database) CreatePlayer(name string) DBPlayer {
@@ -19,7 +19,7 @@ func (d *database) CreatePlayer(name string) DBPlayer {
     CheckError(err)
     id, err := res.LastInsertId()
     CheckError(err)
-    return &dbPlayer{id: id}
+    return &dbPlayer{id: id, db: d}
 }
 
 func (d *database) CreateTurn(player DBPlayer, game DBGame, gridPos Position, subPos Position) DBTurn {
@@ -39,5 +39,5 @@ func (d *database) CreateTurn(player DBPlayer, game DBGame, gridPos Position, su
     CheckError(err)
     id, err := res.LastInsertId()
     CheckError(err)
-    return &dbGame{id: id}
+    return &dbTurn{id: id, db: d}
 }
