@@ -36,7 +36,6 @@ func (dbg *dbGame) fetch(force bool) {
         dbg.winner = obj.GetWinner()
     } else {
         rows, err := db.Query("SELECT id_joueur1, id_joueur2, id_gagnant, date_creation FROM partie WHERE id = ?", dbg.id)
-        // TODO query date
         CheckError(err)
         defer rows.Close()
         if rows.Next() {

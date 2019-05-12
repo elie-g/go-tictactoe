@@ -5,9 +5,10 @@ import (
     "strconv"
 )
 
+// Retourne la dernière partie créée dont le joueur2 est null
 func (d *database) LastCreatedGame() DBGame {
     var game *dbGame
-    rows, err := db.Query("SELECT id FROM partie ORDER BY date_creation DESC LIMIT 1")
+    rows, err := db.Query("SELECT id FROM partie WHERE id_joueur2 IS NULL ORDER BY date_creation DESC LIMIT 1")
     CheckError(err)
     defer rows.Close()
     if rows.Next() {

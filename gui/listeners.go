@@ -2,6 +2,7 @@ package gui
 
 import (
     . "github.com/DrunkenPoney/go-tictactoe/gui/menu/btn"
+    . "github.com/DrunkenPoney/go-tictactoe/gui/menu/pages"
     "github.com/DrunkenPoney/go-tictactoe/settings"
     . "github.com/DrunkenPoney/go-tictactoe/settings/messages"
     "github.com/hajimehoshi/ebiten"
@@ -29,6 +30,10 @@ func (l *layout) initListeners() {
     l.GetMenu().OnButtonClick(BTN_RESUME, l.onBtnResume)
     l.GetMenu().OnButtonClick(BTN_PLAYER_1, l.onBtnPlayer1)
     l.GetMenu().OnButtonClick(BTN_PLAYER_2, l.onBtnPlayer2)
+    l.GetMenu().OnButtonClick(BTN_ONLINE, l.onBtnOnline)
+    l.GetMenu().OnButtonClick(BTN_RETURN, l.onBtnReturn)
+    l.GetMenu().OnButtonClick(BTN_JOIN_ONLINE, l.onBtnJoinOnline)
+    l.GetMenu().OnButtonClick(BTN_CREATE_ONLINE, l.onBtnCreateOnline)
 }
 
 func (l *layout) onBtnExit() {
@@ -70,4 +75,20 @@ func (l *layout) onBtnPlayer2() {
         }
     }
     l.GetMenu().Freeze(false)
+}
+
+func (l *layout) onBtnOnline() {
+    l.GetMenu().SetPage(MP_ONLINE)
+}
+
+func (l *layout) onBtnReturn() {
+    l.GetMenu().SetPage(MP_MAIN)
+}
+
+func (l *layout) onBtnJoinOnline() {
+    // TODO
+}
+
+func (l *layout) onBtnCreateOnline() {
+    // TODO
 }
