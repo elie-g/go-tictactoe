@@ -11,6 +11,7 @@ type DBGame interface {
     GetDate() time.Time
     GetPlayer1() DBPlayer
     GetPlayer2() DBPlayer
+    SetPlayer2(player DBPlayer)
     GetWinner() DBPlayer
     SetWinner(winner DBPlayer)
     Reload()
@@ -91,6 +92,11 @@ func (dbg *dbGame) GetPlayer2() DBPlayer {
         dbg.fetch(false)
     }
     return dbg.player2
+}
+
+func (dbg *dbGame) SetPlayer2(player DBPlayer) {
+    _, err := db.Exec("UPDATE partie SET id_joueur2 = ? WHERE id = ?", player.GetID(), dbg.id)
+    CheckError(err)
 }
 
 func (dbg *dbGame) GetWinner() DBPlayer {
