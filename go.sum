@@ -38,10 +38,12 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/martinlindhe/inputbox v0.0.0-20170822001701-56d473fa6ae3 h1:teGYw72DnPQhz2p9tyWfPJBrgMud6TsW6SAGf/UNbrE=
-github.com/martinlindhe/inputbox v0.0.0-20170822001701-56d473fa6ae3/go.mod h1:NzLiokHFxkMAoDQlhgRFNCM7PmhTzJAjenmXrYSX/oU=
 github.com/mattn/go-gtk v0.0.0-20180216084204-5a311a1830ab/go.mod h1:PwzwfeB5syFHXORC3MtPylVcjIoTDT/9cvkKpEndGVI=
 github.com/mattn/go-pointer v0.0.0-20171114154726-1d30dc4b6f28/go.mod h1:2zXcozF6qYGgmsG+SeTZz3oAbFLdD3OWqnUbNvJZAlc=
+github.com/mosteknoloji/go-powershell v0.0.0-20181231083803-ef9941d81e92 h1:ciweCnpp3xKaJEanVOujO9OBgFVQxf4LvG11X2ufOlE=
+github.com/mosteknoloji/go-powershell v0.0.0-20181231083803-ef9941d81e92/go.mod h1:hCluKHg/7ytJHn047S9+SRKcntWJ9kvIW/kEWJB6ouA=
+github.com/mosteknoloji/inputbox v0.0.0-20181231080101-05491c56e1f2 h1:Wpzk+xOjvyTGo6vXnvzxgqcvjFWFD7yW4NBUMWDN7+o=
+github.com/mosteknoloji/inputbox v0.0.0-20181231080101-05491c56e1f2/go.mod h1:+/x90zapqSCmbNhgo/MH4eliAn3s8wAnuMx4g2ZxK1A=
 github.com/peterhellberg/gfx v0.0.0-20190227205454-4e2da92c8cba h1:fEngzh52XPGZiF69dzprbrLtiYdCPfIqLAHOXrEjKw4=
 github.com/peterhellberg/gfx v0.0.0-20190227205454-4e2da92c8cba/go.mod h1:Zpew1Y99zX+vKVFbK2TmHv9+Qx6eqm3tFk1PJksMJsA=
 github.com/skelterjohn/go.wde v0.0.0-20180104102407-a0324cbf3ffe/go.mod h1:zXxNsJHeUYIqpg890APBNEn9GoCbA4Cdnvuv3mx4fBk=
