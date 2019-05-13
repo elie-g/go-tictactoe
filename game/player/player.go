@@ -10,12 +10,16 @@ type Player interface {
     GetPoints() int
     SetPoints(points int)
     IncrementPoints() int
+    
+    IsRemote() bool
+    SetRemote(remote bool)
 }
 
 type player struct {
     name    string
     current bool
     points  int
+    remote  bool
 }
 
 func (p *player) IsCurrent() bool {
@@ -47,6 +51,14 @@ func (p *player) IncrementPoints() int {
     return p.points
 }
 
+func (p *player) IsRemote() bool {
+    return p.remote
+}
+
+func (p *player) SetRemote(remote bool) {
+    p.remote = remote
+}
+
 func NewPlayer(name string) Player {
-    return &player{name, false, 0}
+    return &player{name, false, 0, false}
 }

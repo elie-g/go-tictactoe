@@ -25,6 +25,9 @@ const (
     MSG_PLAYER_2_BOX        Message = "Nom du joueur 2 (AI):"
     MSG_NAME_TOO_LONG_TITLE Message = "Nom trop long"
     MSG_NAME_TOO_LONG       Message = "Le nom ne peut avoir plus de %d caractères."
+    MSG_CHOOSE_PLAYER_TITLE Message = "Choisir un joueur"
+    MSG_CHOOSE_PLAYER       Message = "Est-ce l'AI qui joue?"
+    MSG_NO_GAME_AVAILABLE   Message = "Aucun partie disponible"
 )
 
 func (msg Message) Str(params ...interface{}) string {

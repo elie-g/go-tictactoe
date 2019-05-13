@@ -1,6 +1,7 @@
 package gui
 
 import (
+    "fmt"
     . "github.com/DrunkenPoney/go-tictactoe/gui/menu/btn"
     . "github.com/DrunkenPoney/go-tictactoe/gui/menu/pages"
     "github.com/DrunkenPoney/go-tictactoe/settings"
@@ -86,9 +87,43 @@ func (l *layout) onBtnReturn() {
 }
 
 func (l *layout) onBtnJoinOnline() {
-    // TODO
+    game := l.GetOnlineData().DB.LastCreatedGame()
+    fmt.Printf("%v // %v\n", game, game == nil)
+    if game != nil {
+        l.GetOnlineData().IsPlayerAI = dialog.Message(MSG_CHOOSE_PLAYER.Str()).Title(MSG_CHOOSE_PLAYER_TITLE.Str()).YesNo()
+        l.GetOnlineData().RemotePlayer = game.GetPlayer1()
+        l.GetOnlineData().IsLocalPlayer1 = false
+        player := l.GetGame().GetPlayerO()
+        if l.GetOnlineData().IsPlayerAI {
+            player = l.GetGame().GetPlayerX()
+            l.GetGame().GetPlayerO().SetName(l.GetOnlineData().RemotePlayer.GetName())
+            l.GetGame().GetPlayerO().SetRemote(true)
+        } else {
+            l.GetGame().GetPlayerX().SetName(l.GetOnlineData().RemotePlayer.GetName())
+            l.GetGame().GetPlayerX().SetRemote(false)
+        }
+        l.GetOnlineData().LocalPlayer = l.GetOnlineData().DB.CreatePlayer(player.GetName())
+        l.GetOnlineData().Game.SetPlayer2(l.GetOnlineData().LocalPlayer)
+        // TODO Who plays the next turn?
+        l.GetGame().Reset()
+    } else {
+        dialog.Message(MSG_NO_GAME_AVAILABLE.Str()).Error()
+    }
 }
 
 func (l *layout) onBtnCreateOnline() {
-    // TODO
+    l.GetOnlineData().IsPlayerAI = dialog.Message(MSG_CHOOSE_PLAYER.Str()).Title(MSG_CHOOSE_PLAYER_TITLE.Str()).YesNo()
+    player := l.GetGame().GetPlayerO()
+    if l.GetOnlineData().IsPlayerAI {
+        player = l.GetGame().GetPlayerX()
+        l.GetGame().GetPlayerO().SetRemote(true)
+    } else {
+        l.GetGame().GetPlayerX().SetRemote(false)
+    }
+    l.GetOnlineData().IsLocalPlayer1 = true
+    l.GetOnlineData().LocalPlayer = l.GetOnlineData().DB.CreatePlayer(player.GetName())
+    l.GetOnlineData().Game = l.GetOnlineData().DB.CreateGame(l.GetOnlineData().LocalPlayer)
+    // TODO Who plays the next turn?
+    // TODO Wait other player to connect
+    l.GetGame().Reset()
 }

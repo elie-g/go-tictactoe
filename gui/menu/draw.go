@@ -43,6 +43,7 @@ func (m *menu) Draw(screen *ebiten.Image) {
         
         img, _ := ebiten.NewImage(int(wMenu), int(hMenu), ebiten.FilterDefault)
         _ = img.Fill(colors.Colors().MenuBackground())
+        defer img.Dispose()
         
         var printBtn = func(btnType ButtonType, order int, nbButtons float64, btnText Message) {
             clr := colors.Colors().MenuButtonBackground()
