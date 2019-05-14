@@ -36,9 +36,14 @@ func (g *game) NextTurn(pos Position) Game {
     if winner == nil {
         g.GetPlayerX().SetCurrent(!g.GetPlayerX().IsCurrent())
         g.GetPlayerO().SetCurrent(!g.GetPlayerO().IsCurrent())
-        g.GetAIProcess().PrepareNextTurn(pos)
         g.GetBoard().SetCurrentPos(pos)
-        g.checkAITurn()
+        if !g.GetPlayerX().IsRemote() {
+            g.GetAIProcess().PrepareNextTurn(pos)
+            g.checkAITurn()
+        }
+        if g.GetPlayerO().IsRemote() || g.GetPlayerX().IsRemote() {
+        
+        }
     } else {
         go func() {
             g.Pause()

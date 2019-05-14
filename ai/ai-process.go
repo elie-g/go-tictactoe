@@ -6,6 +6,7 @@ import (
     . "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     . "github.com/DrunkenPoney/go-tictactoe/position"
     "github.com/DrunkenPoney/go-tictactoe/settings"
+    "math"
     "math/rand"
 )
 
@@ -28,23 +29,26 @@ func (p *process) PrepareNextTurn(pos Position) {
 }
 
 func (p *process) BestMoveFor(tt TileType) Position {
-    bestMove, pred := INVALID, p.GetPrediction().Predict()
-    bestScore, mod := 0.0, 1.0
-    if settings.REFERENCE_PLAYER != tt {
-        mod = -1.0
-    }
-    for pos, score := range pred {
-        score *= mod
-        if score > bestScore {
-            win := p.GetPrediction().CurrentLayer().Board().Get(pos).GetWinningTiles()[0]
-            if win == nil || win.Value == tt {
-                bestMove, bestScore = pos, score
+    bestMove := p.GetPrediction().CurrentLayer().GetWinPos()
+    if bestMove == INVALID {
+        pred := p.GetPrediction().Predict()
+        bestScore, mod := -math.MaxFloat64, 1.0
+        if settings.REFERENCE_PLAYER != tt {
+            mod = -1.0
+        }
+        for pos, score := range pred {
+            nextLayer := p.GetPrediction().CurrentLayer().Next(pos)
+            if nextLayer.GetWinPos() == INVALID {
+                score *= mod
+                if score > bestScore {
+                    bestMove, bestScore = pos, score
+                }
             }
         }
-    }
-    if bestMove == INVALID {
-        empty := p.prediction.CurrentLayer().Grid().EmptyTiles()
-        bestMove = empty[int(rand.Float64()*float64(len(empty)))].Position
+        if bestMove == INVALID {
+            empty := p.prediction.CurrentLayer().Grid().EmptyTiles()
+            bestMove = empty[int(rand.Float64()*float64(len(empty)))].Position
+        }
     }
     return bestMove
 }

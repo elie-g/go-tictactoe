@@ -106,3 +106,7 @@ func (g *game) Resume() {
 func (g *game) IsPaused() bool {
     return g.state == PAUSED || g.state == STOPPED
 }
+
+func (g *game) SetWaitTurn(cb func(Player) (Position, Position)) {
+    // g.waitTurn = cb
+}

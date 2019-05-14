@@ -13,5 +13,5 @@ const (
     
     // Other Settings
     MIN_KEYPRESS_DELAY = 220 * time.Millisecond
-    MAX_PLAYER_NAME_LENGTH = 15
+    MAX_PLAYER_NAME_LENGTH = 20
 )
