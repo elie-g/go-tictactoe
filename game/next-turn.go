@@ -28,37 +28,34 @@ func (g *game) CheckWinnerInGrid(tiles grid.TileGrid) Player {
 }
 
 func (g *game) NextTurn(pos Position) Game {
-    if pos == INVALID {
-        return g
-    }
-    fmt.Printf("-------------------------- NEW TURN --------------------------\n")
-    winner := g.CheckWinnerInGrid(g.board.CurrentGrid())
-    if winner == nil {
-        g.GetPlayerX().SetCurrent(!g.GetPlayerX().IsCurrent())
-        g.GetPlayerO().SetCurrent(!g.GetPlayerO().IsCurrent())
-        g.GetBoard().SetCurrentPos(pos)
-        if !g.GetPlayerX().IsRemote() {
+    if !g.IsOnline() {
+        if pos == INVALID {
+            return g
+        }
+        fmt.Printf("-------------------------- NEW TURN --------------------------\n")
+        winner := g.CheckWinnerInGrid(g.board.CurrentGrid())
+        if winner == nil {
+            g.GetPlayerX().SetCurrent(!g.GetPlayerX().IsCurrent())
+            g.GetPlayerO().SetCurrent(!g.GetPlayerO().IsCurrent())
+            g.GetBoard().SetCurrentPos(pos)
             g.GetAIProcess().PrepareNextTurn(pos)
             g.checkAITurn()
+        } else {
+            go func() {
+                g.Pause()
+                winner.IncrementPoints()
+                msg := MSG_GAME_LOST
+                if winner == g.GetPlayerO() {
+                    msg = MSG_GAME_WIN
+                }
+                ok := dialog.Message(msg.Str() + "\n\n" + MSG_NEW_GAME.Str()).Title(MSG_NEW_GAME.Str()).YesNo()
+                if !ok {
+                    os.Exit(0)
+                }
+                g.Reset()
+                g.checkAITurn()
+            }()
         }
-        if g.GetPlayerO().IsRemote() || g.GetPlayerX().IsRemote() {
-        
-        }
-    } else {
-        go func() {
-            g.Pause()
-            winner.IncrementPoints()
-            msg := MSG_GAME_LOST
-            if winner == g.GetPlayerO() {
-                msg = MSG_GAME_WIN
-            }
-            ok := dialog.Message(msg.Str() + "\n\n" + MSG_NEW_GAME.Str()).Title(MSG_NEW_GAME.Str()).YesNo()
-            if !ok {
-                os.Exit(0)
-            }
-            g.Reset()
-            g.checkAITurn()
-        }()
     }
     return g
 }

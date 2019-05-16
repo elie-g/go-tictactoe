@@ -23,6 +23,11 @@ func (dbp *dbPlayer) fetch(force bool) {
     if !force && dbp.db.players[dbp.id] != nil {
         dbp.name = dbp.db.players[dbp.id].GetName()
     } else {
+        var name string
+        row := db.QueryRow("SELECT nom FROM joueur WHERE id = ?", dbp.id)
+        CheckError(row.Scan(&name))
+        dbp.name = name
+        
         rows, err := db.Query("SELECT nom FROM joueur WHERE id = ?", dbp.id)
         CheckError(err)
         defer rows.Close()

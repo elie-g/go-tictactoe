@@ -2,7 +2,6 @@ package db
 
 import (
     . "github.com/DrunkenPoney/go-tictactoe/internal"
-    "strconv"
     "time"
 )
 
@@ -35,36 +34,34 @@ func (dbg *dbGame) fetch(force bool) {
         dbg.player2 = obj.GetPlayer2()
         dbg.winner = obj.GetWinner()
     } else {
-        rows, err := db.Query("SELECT id_joueur1, id_joueur2, id_gagnant, date_creation FROM partie WHERE id = ?", dbg.id)
+        row := db.QueryRow("SELECT id_joueur1, IFNULL(id_joueur2, -1), IFNULL(id_gagnant, -1) FROM partie WHERE id = ?", dbg.id)
+        // CheckError(err)
+        // defer rows.Close()
+        // if rows.Next() {
+        //     cols, err := rows.Columns()
+            // CheckError(err)
+        var id1, id2, id3 int64
+        var date time.Time
+        err := row.Scan(&id1, &id2, &id3)
         CheckError(err)
-        defer rows.Close()
-        if rows.Next() {
-            cols, err := rows.Columns()
-            CheckError(err)
+            dbg.player1 = &dbPlayer{id: id1, db: dbg.db}
+            dbg.player2 = &dbPlayer{id: id2, db: dbg.db}
             
-            id, err := strconv.ParseInt(cols[0], 10, 64)
-            CheckError(err)
-            dbg.player1 = &dbPlayer{id: id}
+            // if len(cols[2]) > 0 {
+            //     id, err = strconv.ParseInt(cols[2], 10, 64)
+            //     CheckError(err)
+            //     dbg.winner = &dbPlayer{id: id, db: dbg.db}
+            // }
             
-            id, err = strconv.ParseInt(cols[1], 10, 64)
-            CheckError(err)
-            dbg.player2 = &dbPlayer{id: id}
-            
-            if len(cols[2]) > 0 {
-                id, err = strconv.ParseInt(cols[2], 10, 64)
-                CheckError(err)
-                dbg.winner = &dbPlayer{id: id}
-            }
-            
-            t, err := strconv.ParseInt(cols[4], 10, 64)
-            CheckError(err)
-            dbg.date = time.Unix(t, 0)
-            
+            // t, err := strconv.ParseInt(date, 10, 64)
+            // CheckError(err)
+            // dbg.date = time.Unix(t, 0)
+            dbg.date = date
             dbg.fetched = true
             dbg.db.games[dbg.id] = dbg
-        } else {
-            panic("FETCH FAILED! (no data)")
-        }
+        // } else {
+        //     panic("FETCH FAILED! (no data)")
+        // }
     }
 }
 

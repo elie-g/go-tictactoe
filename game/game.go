@@ -3,6 +3,7 @@ package game
 import (
     "github.com/DrunkenPoney/go-tictactoe/ai"
     "github.com/DrunkenPoney/go-tictactoe/board"
+    . "github.com/DrunkenPoney/go-tictactoe/db"
     . "github.com/DrunkenPoney/go-tictactoe/game/player"
     . "github.com/DrunkenPoney/go-tictactoe/game/state"
     "github.com/DrunkenPoney/go-tictactoe/grid"
@@ -31,6 +32,10 @@ type Game interface {
     Reset() Game
     
     Draw(screen *ebiten.Image) Game
+    
+    IsOnline() bool
+    InitOnline(dbGame DBGame, begin bool)
+    ExitOnline()
 }
 
 func NewGame(playerO Player, playerX Player, board board.Board) Game {
@@ -46,8 +51,8 @@ func NewGame(playerO Player, playerX Player, board board.Board) Game {
     } else {
         aiProcess = ai.NewAIProcess(X, board.Grids())
     }
-    g := &game{playerO, playerX, aiProcess,
-        board, make(chan State), RUNNING}
+    g := &game{playerO, playerX, aiProcess, board,
+        make(chan State), RUNNING, false, nil, nil, 1, 1}
     go func() {
         for {
             g.onState(<-g.stateChan)
@@ -63,6 +68,11 @@ type game struct {
     board     board.Board
     stateChan chan State
     state     State
+    online    bool
+    db        Database
+    dbGame    DBGame
+    noTurn    int
+    prevTurn  int
 }
 
 func (g *game) Reset() Game {
@@ -105,8 +115,4 @@ func (g *game) Resume() {
 
 func (g *game) IsPaused() bool {
     return g.state == PAUSED || g.state == STOPPED
-}
-
-func (g *game) SetWaitTurn(cb func(Player) (Position, Position)) {
-    // g.waitTurn = cb
 }

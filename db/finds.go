@@ -53,7 +53,7 @@ func (d *database) FindPlayer(id int64, force bool) DBPlayer {
     rows, err := db.Query("SELECT id, nom FROM joueur WHERE id = ?", id)
     CheckError(err)
     defer rows.Close()
-    if rows.Next() {
+    if rows.NextResultSet() {
         player = &dbPlayer{}
         cols, err := rows.Columns()
         CheckError(err)
@@ -76,7 +76,7 @@ func (d *database) FindTurn(id int64, force bool) DBTurn {
     rows, err := db.Query("SELECT id, no_coup, id_partie, id_joueur, cadrant, position FROM coup WHERE id = ?", id)
     CheckError(err)
     defer rows.Close()
-    if rows.Next() {
+    if rows.NextResultSet() {
         turn = &dbTurn{}
         cols, err := rows.Columns()
         CheckError(err)

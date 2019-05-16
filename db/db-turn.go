@@ -2,7 +2,6 @@ package db
 
 import (
     . "github.com/DrunkenPoney/go-tictactoe/internal"
-    "strconv"
 )
 
 type DBTurn interface {
@@ -36,34 +35,12 @@ func (dbt *dbTurn) fetch(force bool) {
         dbt.gridPos = obj.GetGridPos()
         dbt.subPos = obj.GetSubGridPos()
     } else {
-        rows, err := db.Query("SELECT no_coup, cadrant, position, id_partie, id_joueur FROM coup where id = ?", dbt.id)
-        CheckError(err)
-        defer rows.Close()
-        if rows.Next() {
-            cols, err := rows.Columns()
-            CheckError(err)
-            
-            dbt.no, err = strconv.ParseInt(cols[0], 10, 64)
-            CheckError(err)
-            
-            dbt.gridPos, err = strconv.Atoi(cols[1])
-            CheckError(err)
-            
-            dbt.subPos, err = strconv.Atoi(cols[2])
-            CheckError(err)
-            
-            id, err := strconv.ParseInt(cols[3], 10, 64)
-            CheckError(err)
-            dbt.player = &dbPlayer{id: id}
-            
-            id, err = strconv.ParseInt(cols[4], 10, 64)
-            CheckError(err)
-            dbt.game = &dbGame{id: id}
-            dbt.fetched = true
-            dbt.db.turns[dbt.id] = dbt
-        } else {
-            panic("FETCH FAILED! (no data)")
-        }
+        row := db.QueryRow("SELECT no_coup, cadrant, position, id_partie, id_joueur FROM coup where id = ?", dbt.id)
+        var idGame, idPlayer int64
+        CheckError(row.Scan(&dbt.no, &dbt.gridPos, &dbt.subPos, &idGame, &idPlayer))
+        dbt.game = &dbGame{id: idGame, db: dbt.db}
+        dbt.player = &dbPlayer{id: idPlayer, db: dbt.db}
+        dbt.fetched = true
     }
 }
 

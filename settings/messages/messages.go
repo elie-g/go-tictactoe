@@ -27,6 +27,8 @@ const (
     MSG_NAME_TOO_LONG       Message = "Le nom ne peut avoir plus de %d caractères."
     MSG_CHOOSE_PLAYER_TITLE Message = "Choisir un joueur"
     MSG_CHOOSE_PLAYER       Message = "Est-ce l'AI qui joue?"
+    MSG_FIRST_PLAYER_TITLE  Message = "Qui est le premier joueur?"
+    MSG_FIRST_PLAYER        Message = "Êtes-vous le premier à jouer?"
     MSG_NO_GAME_AVAILABLE   Message = "Aucun partie disponible"
 )
 

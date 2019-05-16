@@ -2,12 +2,10 @@ package gui
 
 import (
     "github.com/DrunkenPoney/go-tictactoe/board"
-    "github.com/DrunkenPoney/go-tictactoe/db"
     . "github.com/DrunkenPoney/go-tictactoe/game"
     . "github.com/DrunkenPoney/go-tictactoe/game/player"
     "github.com/DrunkenPoney/go-tictactoe/grid/tile"
     . "github.com/DrunkenPoney/go-tictactoe/gui/menu"
-    . "github.com/DrunkenPoney/go-tictactoe/online"
     . "github.com/DrunkenPoney/go-tictactoe/position"
     "github.com/hajimehoshi/ebiten"
 )
@@ -17,8 +15,6 @@ type Layout interface {
     ToggleMenu() bool
     GetGame() Game // TODO Add possibility to pause, resume and restart the game
     GetMenu() Menu
-    GetOnlineData() *OnlineData
-    IsOnline() bool
     Draw(screen *ebiten.Image)
 }
 
@@ -32,7 +28,6 @@ func NewLayout(playerO string, playerX string) Layout {
 type layout struct {
     activeTile *tile.Tile
     activePos  Position
-    onlineData *OnlineData
     game       Game
     menu       Menu
 }
@@ -53,15 +48,4 @@ func (l *layout) GetGame() Game {
 
 func (l *layout) GetMenu() Menu {
     return l.menu
-}
-
-func (l *layout) IsOnline() bool {
-    return l.onlineData != nil
-}
-
-func (l *layout) GetOnlineData() *OnlineData {
-    if l.onlineData == nil {
-        l.onlineData = &OnlineData{DB: db.NewDatabase()}
-    }
-    return l.onlineData
 }
