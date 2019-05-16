@@ -24,6 +24,7 @@ func (g *game) InitOnline(dbGame DBGame, begin bool) {
     g.dbGame = dbGame
     g.online = true
     
+    
     lastTurn := db.LastTurn(dbGame)
     // if !begin && lastTurn == nil {
     go g.waitTurn(g.noTurn)
@@ -87,22 +88,25 @@ func (g *game) waitTurn(noTurn int) DBTurn {
     if winner != nil {
         g.endGame(winner)
     }
-    // g.NextTurn(tile.Position)
     g.waitTurn(g.noTurn + 1)
+    // g.NextTurn(tile.Position)
     return turn
 }
 
 func (g *game) endGame(winner player.Player) {
     g.Pause()
     winner.IncrementPoints()
-    msg := MSG_GAME_LOST
+    msg := MSG_GAME_WIN
     if winner == g.GetPlayerO() {
-        msg = MSG_GAME_WIN
+        msg = MSG_GAME_LOST
     }
     ok := dialog.Message(msg.Str() + "\n\n" + MSG_NEW_GAME.Str()).Title(MSG_NEW_GAME.Str()).YesNo()
     if !ok {
         os.Exit(0)
     }
     g.Reset()
+    g.GetPlayerX().SetCurrent(false)
+    g.GetPlayerO().SetCurrent(true)
     // g.checkAITurn()
+    g.waitTurn(g.noTurn + 1)
 }

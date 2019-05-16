@@ -135,7 +135,7 @@ func (l *layout) onBtnCreateOnline() {
     localPlayer.SetRemote(false)
     localPlayer.SetDBPlayer(db.CreatePlayer(localPlayer.GetName()))
     
-    l.GetGame().InitOnline(db.CreateGame(localPlayer.GetDBPlayer()), localFirst)
     l.GetMenu().SetPage(MP_MAIN)
     l.GetMenu().SetShown(false)
+    l.GetGame().InitOnline(db.CreateGame(localPlayer.GetDBPlayer()), localFirst)
 }
