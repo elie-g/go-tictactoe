@@ -7,7 +7,7 @@ import (
 
 // Private
 func (g *game) OnClick() {
-	if !g.IsPaused() {
+	if !g.IsPaused() && !g.IsOnline() {
 		t, pos := g.board.GetTileUnderCursor()
 		if t != nil {
 			if g.GetBoard().GetCurrentPos() == pos && t.Value == EMPTY {

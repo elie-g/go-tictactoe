@@ -22,9 +22,7 @@ func (l *layout) Draw(screen *ebiten.Image) {
     
     if font == nil {
         tt, err := truetype.Parse(fonts.ArcadeN_ttf)
-        if err != nil {
-            panic(err)
-        }
+        internal.CheckError(err)
         font = truetype.NewFace(tt, &truetype.Options{Size: fntSize, DPI: 72, Hinting: f.HintingFull})
     }
     

@@ -60,7 +60,7 @@ func (pred *prediction) Predict() map[Position]float64 {
         wg.Add(1)
         go func(pos Position, layer PredictionLayer, wg *sync.WaitGroup, mut *sync.Mutex) {
             defer wg.Done()
-            res := (layer.GetScore() * 3) + pred.calcLayer(layer)
+            res := layer.GetScore() + pred.calcLayer(layer)
             mut.Lock()
             predictions[pos] = res
             mut.Unlock()
@@ -88,7 +88,7 @@ func (pred *prediction) calcLayer(layer PredictionLayer) float64 {
             count++
             go func(subLayer PredictionLayer, wg *sync.WaitGroup, mut *sync.Mutex) {
                 defer wg.Done()
-                scr := (subLayer.GetScore() * 3) + pred.calcLayer(subLayer)
+                scr := subLayer.GetScore() + pred.calcLayer(subLayer)
                 mut.Lock()
                 score += scr
                 mut.Unlock()

@@ -16,6 +16,8 @@ type PredictionLayer interface {
     Depth() int
     
     GetScore() float64
+    GetWinPossibilities() map[Position]bool
+    GetWinPos() Position
     CurrentPlayer() TileType
     
     GridPosition() Position
@@ -24,14 +26,12 @@ type PredictionLayer interface {
 }
 
 func NewLayer(position Position, player TileType, board BoardGrid) PredictionLayer {
-    x, y := position.GetXY()
-    fmt.Printf("NEW PREDICTION LAYER CREATED // Position: %d (%d, %d) // Player: %d\n", position, x, y, player)
     return &layer{
         position: position,
-        player: player,
-        depth: 0,
-        board: board,
-        path: Path{},
+        player:   player,
+        depth:    0,
+        board:    board,
+        path:     Path{},
     }
 }
 
@@ -86,14 +86,38 @@ func (l *layer) Next(pos Position) PredictionLayer {
     return nil
 }
 
-func (l *layer) GetScore() float64 {
-    score := 0.0
-    winning := l.Grid().GetWinningTiles()
-    if winning[0] != nil {
-        score = 10
-        if winning[0].Value != settings.REFERENCE_PLAYER {
-            score = -10
+func (l *layer) GetWinPossibilities() map[Position]bool {
+    emptyTiles := l.Grid().EmptyTiles()
+    possibilities := make(map[Position]bool)
+    for _, tile := range emptyTiles {
+        clone := l.Grid().Clone()
+        clone.At(tile.Position).Value = l.CurrentPlayer()
+        possibilities[tile.Position] = clone.GetWinningTiles()[0] != nil
+    }
+    return possibilities
+}
+
+func (l *layer) GetWinPos() Position {
+    for pos, win := range l.GetWinPossibilities() {
+        if win {
+            fmt.Printf("\t > Pos %d => CAN WIN!!!\tPlayer: %v // Depth: %v\n", pos, l.CurrentPlayer(), l.Depth())
+            return pos
         }
     }
-    return score
+    return INVALID
+}
+
+func (l *layer) GetScore() float64 {
+    score := 0.0
+    possibilities := l.GetWinPossibilities()
+    for _, winning := range possibilities {
+        if winning {
+            if l.CurrentPlayer() == settings.REFERENCE_PLAYER {
+                score += 10
+            } else {
+                score += -10
+            }
+        }
+    }
+    return score / float64(len(possibilities))
 }

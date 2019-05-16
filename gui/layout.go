@@ -19,18 +19,17 @@ type Layout interface {
 }
 
 func NewLayout(playerO string, playerX string) Layout {
-    layout := &layout{
-        game: NewGame(NewPlayer(playerO), NewPlayer(playerX), board.NewBoard()),
-        menu: NewMenu()}
+    layout := &layout{menu: NewMenu()}
+    layout.game = NewGame(NewPlayer(playerO), NewPlayer(playerX), board.NewBoard())
     layout.initListeners()
     return layout
 }
 
 type layout struct {
-    activeTile      *tile.Tile
-    activePos       Position
-    game            Game
-    menu            Menu
+    activeTile *tile.Tile
+    activePos  Position
+    game       Game
+    menu       Menu
 }
 
 func (l *layout) ToggleMenu() bool {
